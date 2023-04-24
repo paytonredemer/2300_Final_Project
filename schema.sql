@@ -18,6 +18,7 @@ CREATE TABLE Bin (
     Room VARCHAR(80), 
     FOREIGN KEY(Address) REFERENCES Location(Address)
 );
+/* FOREIGN KEY(Bin_no) REFERENCES Bin(Bin_no) */
 
 CREATE TABLE Charger (
     Charger_ID VARCHAR(80),
@@ -27,8 +28,7 @@ CREATE TABLE Charger (
     Address VARCHAR(80),
     Bin_no INTEGER,
     PRIMARY KEY(Charger_ID),
-    FOREIGN KEY(Address) REFERENCES Location(Address),
-    /* FOREIGN KEY(Bin_no) REFERENCES Bin(Bin_no) */
+    FOREIGN KEY(Address) REFERENCES Location(Address)
 );
 
 CREATE TABLE Storage (
@@ -40,9 +40,9 @@ CREATE TABLE Storage (
     Address VARCHAR(80),
     Bin_no INTEGER,
     PRIMARY KEY(Storage_ID),
-    FOREIGN KEY(Address) REFERENCES Location(Address),
-    /* FOREIGN KEY(Bin_no) REFERENCES Bin(Bin_no) */
+    FOREIGN KEY(Address) REFERENCES Location(Address)
 );
+/* FOREIGN KEY(Bin_no) REFERENCES Bin(Bin_no) */
 
 CREATE TABLE Cable (
     Cable_ID VARCHAR(80),
@@ -52,8 +52,7 @@ CREATE TABLE Cable (
     Address VARCHAR(80),
     Bin_no INTEGER,
     PRIMARY KEY(Cable_ID),
-    FOREIGN KEY(Address) REFERENCES Location(Address),
-    /* FOREIGN KEY(Bin_no) REFERENCES Bin(Bin_no) */
+    FOREIGN KEY(Address) REFERENCES Location(Address)
 );
 
 CREATE TABLE Connector (
@@ -77,7 +76,7 @@ CREATE TABLE Cable_checkout (
     User_ID VARCHAR(80),
     Checkout_date INTEGER,
     FOREIGN KEY(Cable_ID) REFERENCES Cable(Cable_ID),
-    FOREIGN KEY(User_ID) REFERENCES User(ID),
+    FOREIGN KEY(User_ID) REFERENCES User(ID)
 );
 
 CREATE TABLE Storage_checkout (
@@ -85,7 +84,7 @@ CREATE TABLE Storage_checkout (
     User_ID VARCHAR(80),
     Checkout_date INTEGER,
     FOREIGN KEY(Storage_ID) REFERENCES Storage(Storage_ID),
-    FOREIGN KEY(User_ID) REFERENCES User(ID),
+    FOREIGN KEY(User_ID) REFERENCES User(ID)
 );
 
 CREATE TABLE Charger_checkout (
@@ -93,5 +92,5 @@ CREATE TABLE Charger_checkout (
     User_ID VARCHAR(80),
     Checkout_date INTEGER,
     FOREIGN KEY(Charger_ID) REFERENCES Charger(Charger_ID),
-    FOREIGN KEY(User_ID) REFERENCES User(ID),
+    FOREIGN KEY(User_ID) REFERENCES User(ID)
 );
