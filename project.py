@@ -9,24 +9,44 @@ from tkinter import ttk
 
 root = tk.Tk()
 root.title("Electronic management")
-tab_control = ttk.Notebook(root)
 
-charger_tab = ttk.Frame(tab_control)
-storage_tab = ttk.Frame(tab_control)
-cable_tab = ttk.Frame(tab_control)
-all_tab = ttk.Frame(tab_control)
+frame = tk.Frame(root)
+frame.pack()
 
-tab_control.add(charger_tab, text = "Charger")
-tab_control.add(storage_tab, text = "Storage")
-tab_control.add(cable_tab, text = "Cable")
-tab_control.add(all_tab, text = "All")
-tab_control.pack(expand= 1, fill = "both")
+user_info_frame = tk.LabelFrame(frame, text="User Information")
+user_info_frame.grid(row=0, column=0, padx=10,pady=10)
 
-# col1 = tk.Label(text="Col 1")
-# col1.grid(column=0, row=0)
-#
-# col2 = tk.Label(text="Col 2")
-# col2.grid(column=1, row=0)
-# greeting.pack()
+charger_id_label = tk.Label(user_info_frame, text= "Charger_ID")
+charger_id_entry = tk.Entry(user_info_frame)
+charger_id_label.grid(row=0, column=0)
+charger_id_entry.grid(row=1, column=0)
+
+power_label = tk.Label(user_info_frame, text= "Power")
+power_entry = tk.Entry(user_info_frame)
+power_label.grid(row=0, column=1)
+power_entry.grid(row=1, column=1)
+
+brand_label = tk.Label(user_info_frame, text= "Brand")
+brand_entry = tk.Entry(user_info_frame)
+brand_label.grid(row=0, column=2)
+brand_entry.grid(row=1, column=2)
+
+input_label = tk.Label(user_info_frame, text= "Input")
+input_entry = tk.Entry(user_info_frame)
+input_label.grid(row=0, column=3)
+input_entry.grid(row=1, column=3)
+
+address_label = tk.Label(user_info_frame, text= "Address")
+address_entry = tk.Entry(user_info_frame)
+address_label.grid(row=0, column=4)
+address_entry.grid(row=1, column=4)
+
+bin_label = tk.Label(user_info_frame, text= "Bin Number")
+bin_entry = tk.Entry(user_info_frame)
+bin_label.grid(row=0, column=5)
+bin_entry.grid(row=1, column=5)
+
+for widget in user_info_frame.winfo_children():
+    widget.grid_configure(padx=10,pady=10)
 
 root.mainloop()
