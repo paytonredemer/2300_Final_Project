@@ -5,7 +5,7 @@ Inventory management system
 """
 
 import tkinter as tk
-from tkinter import ttk
+from tkinter import StringVar, ttk
 
 root = tk.Tk()
 root.title("Electronic management")
@@ -14,8 +14,8 @@ frame = tk.Frame(root)
 frame.pack()
 
 # frames
-user_info_frame = tk.LabelFrame(frame, text="Search")
-user_info_frame.grid(row=0, column=0, padx=10,pady=10)
+input_frame = tk.LabelFrame(frame, text="Search")
+input_frame.grid(row=0, column=0, padx=10,pady=10)
 
 data_frame = tk.LabelFrame(frame, text="Result")
 data_frame.grid(row=1,column=0, sticky="news", padx=10,pady=10)
@@ -27,47 +27,57 @@ add_frame = tk.LabelFrame(frame, text="Add")
 add_frame.grid(row=3,column=0, sticky="news", padx=10,pady=10)
 
 # input section
-charger_id_label = tk.Label(user_info_frame, text= "Charger_ID")
-charger_id_entry = tk.Entry(user_info_frame)
-charger_id_label.grid(row=0, column=0)
-charger_id_entry.grid(row=1, column=0)
+type_label = tk.Label(input_frame, text= "Electronic Type")
+type_label.grid(row=0, column=0)
 
-power_label = tk.Label(user_info_frame, text= "Power")
-power_entry = tk.Entry(user_info_frame)
-power_label.grid(row=0, column=1)
-power_entry.grid(row=1, column=1)
+options = ["Charger", "Storage", "Cable"]
+clicked = StringVar()
+clicked.set(options[1])
 
-brand_label = tk.Label(user_info_frame, text= "Brand")
-brand_entry = tk.Entry(user_info_frame)
-brand_label.grid(row=0, column=2)
-brand_entry.grid(row=1, column=2)
+type_entry = tk.OptionMenu(input_frame, clicked, *options)
+type_entry.grid(row=1, column=0)
 
-input_label = tk.Label(user_info_frame, text= "Input")
-input_entry = tk.Entry(user_info_frame)
-input_label.grid(row=0, column=3)
-input_entry.grid(row=1, column=3)
+id_label = tk.Label(input_frame, text= "ID")
+id_entry = tk.Entry(input_frame)
+id_label.grid(row=0, column=1)
+id_entry.grid(row=1, column=1)
+
+power_label = tk.Label(input_frame, text= "Power")
+power_entry = tk.Entry(input_frame)
+power_label.grid(row=0, column=2)
+power_entry.grid(row=1, column=2)
+
+brand_label = tk.Label(input_frame, text= "Brand")
+brand_entry = tk.Entry(input_frame)
+brand_label.grid(row=0, column=3)
+brand_entry.grid(row=1, column=3)
+
+input_label = tk.Label(input_frame, text= "Input")
+input_entry = tk.Entry(input_frame)
+input_label.grid(row=0, column=4)
+input_entry.grid(row=1, column=4)
 
 # TODO: Add multi select option
-# output_label = tk.Label(user_info_frame, text= "Output")
-# output_entry = tk.Listbox(user_info_frame)
-# output_label.grid(row=0, column=4)
-# output_entry.grid(row=1, column=4)
-#
-# output_entry.insert(1, "test1")
-# output_entry.insert(2, "test2")
+output_label = tk.Label(input_frame, text= "Output")
+output_entry = tk.Listbox(input_frame)
+output_label.grid(row=0, column=5)
+output_entry.grid(row=1, column=5)
 
-address_label = tk.Label(user_info_frame, text= "Address")
-address_entry = tk.Entry(user_info_frame)
-address_label.grid(row=0, column=5)
-address_entry.grid(row=1, column=5)
+output_entry.insert(1, "test1")
+output_entry.insert(2, "test2")
 
-bin_label = tk.Label(user_info_frame, text= "Bin Number")
-bin_entry = tk.Entry(user_info_frame)
-bin_label.grid(row=0, column=6)
-bin_entry.grid(row=1, column=6)
+address_label = tk.Label(input_frame, text= "Address")
+address_entry = tk.Entry(input_frame)
+address_label.grid(row=0, column=6)
+address_entry.grid(row=1, column=6)
 
-submit_buttton = tk.Button(user_info_frame, text= "Search")
-submit_buttton.grid(row=1, column=7)
+bin_label = tk.Label(input_frame, text= "Bin Number")
+bin_entry = tk.Entry(input_frame)
+bin_label.grid(row=0, column=7)
+bin_entry.grid(row=1, column=7)
+
+submit_buttton = tk.Button(input_frame, text= "Search")
+submit_buttton.grid(row=1, column=8)
 
 
 # sql result section
@@ -99,7 +109,7 @@ new_item_button.grid(row=1, column=1)
 
 
 # visual stuff
-for widget in user_info_frame.winfo_children():
+for widget in input_frame.winfo_children():
     widget.grid_configure(padx=10,pady=5)
 
 for widget in modify_frame.winfo_children():
