@@ -7,6 +7,9 @@ Inventory management system
 import tkinter as tk
 from tkinter import StringVar, ttk
 
+def update_type(*args):
+    print(clicked.get())
+
 root = tk.Tk()
 root.title("Electronic management")
 
@@ -33,6 +36,7 @@ type_label.grid(row=0, column=0)
 options = ["Charger", "Storage", "Cable"]
 clicked = StringVar()
 clicked.set(options[1])
+clicked.trace('w', update_type)
 
 type_entry = tk.OptionMenu(input_frame, clicked, *options)
 type_entry.grid(row=1, column=0)
