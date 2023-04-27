@@ -23,6 +23,11 @@ def create_db() -> None:
         cur = con.cursor()
         cur.executescript(sql_script)
         con.commit()
+
+        with open('insert.sql', 'r') as insert_file:
+            insert_script = insert_file.read()
+        cur.executescript(insert_script)
+        con.commit()
         con.close()
 
 def add_item(item: str, attributes: tuple, multivalue: list[tuple] = []) -> None:
@@ -63,3 +68,5 @@ def add_cable(database: tuple[sqlite3.Connection, sqlite3.Cursor], attributes: t
 
     database[1].executemany("INSERT INTO Connector VALUES(?, ?,?)", connectors)
     database[0].commit()
+
+create_db()
