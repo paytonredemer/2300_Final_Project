@@ -8,7 +8,28 @@ import tkinter as tk
 from tkinter import StringVar, ttk
 
 def update_type(*args):
-    print(clicked.get())
+   type = clicked.get()
+
+   if type == "Charger":
+       id_label.config(text="Charger_ID")
+       int_label.config(text="Power")
+       varchar_label.config(text="Input")
+       output_label.grid()
+       output_entry.grid()
+       output_label.config(text="Output")
+   elif type == "Storage":
+       id_label.config(text="Storage_ID")
+       int_label.config(text="Storage_Size")
+       varchar_label.config(text="Connector")
+       output_label.grid_remove()
+       output_entry.grid_remove()
+   elif type == "Cable":
+       id_label.config(text="Cable_ID")
+       int_label.config(text="Length")
+       varchar_label.config(text="Color")
+       output_label.grid()
+       output_entry.grid()
+       output_label.config(text="Connector")
 
 root = tk.Tk()
 root.title("Electronic management")
@@ -35,31 +56,31 @@ type_label.grid(row=0, column=0)
 
 options = ["Charger", "Storage", "Cable"]
 clicked = StringVar()
-clicked.set(options[1])
+clicked.set(options[0])
 clicked.trace('w', update_type)
 
 type_entry = tk.OptionMenu(input_frame, clicked, *options)
 type_entry.grid(row=1, column=0)
 
-id_label = tk.Label(input_frame, text= "ID")
+id_label = tk.Label(input_frame, text= "Charger_ID")
 id_entry = tk.Entry(input_frame)
 id_label.grid(row=0, column=1)
 id_entry.grid(row=1, column=1)
 
-power_label = tk.Label(input_frame, text= "Power")
-power_entry = tk.Entry(input_frame)
-power_label.grid(row=0, column=2)
-power_entry.grid(row=1, column=2)
-
 brand_label = tk.Label(input_frame, text= "Brand")
 brand_entry = tk.Entry(input_frame)
-brand_label.grid(row=0, column=3)
-brand_entry.grid(row=1, column=3)
+brand_label.grid(row=0, column=2)
+brand_entry.grid(row=1, column=2)
 
-input_label = tk.Label(input_frame, text= "Input")
-input_entry = tk.Entry(input_frame)
-input_label.grid(row=0, column=4)
-input_entry.grid(row=1, column=4)
+int_label = tk.Label(input_frame, text= "Power")
+int_entry = tk.Entry(input_frame)
+int_label.grid(row=0, column=3)
+int_entry.grid(row=1, column=3)
+
+varchar_label = tk.Label(input_frame, text= "Input")
+varchar_entry = tk.Entry(input_frame)
+varchar_label.grid(row=0, column=4)
+varchar_entry.grid(row=1, column=4)
 
 # TODO: Add multi select option
 output_label = tk.Label(input_frame, text= "Output")
@@ -90,10 +111,10 @@ data_result.pack(expand=True, fill='both')
 
 
 # Edit/change
-id_label = tk.Label(modify_frame, text= "ID:")
-id_entry = tk.Entry(modify_frame)
-id_label.grid(row=0,column=0)
-id_entry.grid(row=0,column=1)
+id_edit_label = tk.Label(modify_frame, text= "ID:")
+id_edit_entry = tk.Entry(modify_frame)
+id_edit_label.grid(row=0,column=0)
+id_edit_entry.grid(row=0,column=1)
 
 checkout_buttton = tk.Button(modify_frame, text= "Checkout")
 checkout_buttton.grid(row=0, column=2)
