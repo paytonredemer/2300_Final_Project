@@ -30,6 +30,9 @@ def create_db() -> None:
         con.close()
 
 def get_table_column_names(table: str) -> list[str]:
+    """
+    Returns list of table column names
+    """
     con = sqlite3.connect(path)
     cur = con.cursor()
     res = cur.execute("SELECT name FROM PRAGMA_TABLE_INFO(?)", (table,))
@@ -43,7 +46,6 @@ def add_item(item: str, attributes: tuple, multivalue: list[tuple] = []) -> None
     """
     Add entries into database
     """
-    
     con = sqlite3.connect(path)
     cur = con.cursor()
 
