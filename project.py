@@ -38,7 +38,6 @@ def update_Treeview(table: str):
 
     data_result['columns'] = tuple(column_names)
 
-    data_result.heading("#0", text="")
     for column in column_names:
         data_result.heading(column, text=column)
 
@@ -122,21 +121,7 @@ data_result = ttk.Treeview(data_frame)
 data_result['columns'] = ("ID", "Brand", "Address")
 data_result['show'] = 'headings'
 
-# data_result.column("#0")
-# data_result.column("ID")
-# data_result.column("Brand")
-# data_result.column("Address")
-
-data_result.heading("#0", text="")
-data_result.heading("ID", text="ID")
-data_result.heading("Brand", text="Brand")
-data_result.heading("Address", text="Address")
-
-# count = 0
-# for record in query_db():
-#     data_result.insert(parent='', index='end', iid=str(count), values=record)
-#     count += 1
-
+update_Treeview("Charger")
 
 data_result.pack(expand=True, fill='both')
 
