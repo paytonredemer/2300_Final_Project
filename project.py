@@ -6,30 +6,42 @@ Inventory management system
 
 import tkinter as tk
 from tkinter import StringVar, ttk
+from db import get_table_column_names
 
 def update_type(*args):
-   type = clicked.get()
+    type = clicked.get()
 
-   if type == "Charger":
-       id_label.config(text="Charger_ID")
-       int_label.config(text="Power")
-       varchar_label.config(text="Input")
-       output_label.grid()
-       output_entry.grid()
-       output_label.config(text="Output")
-   elif type == "Storage":
-       id_label.config(text="Storage_ID")
-       int_label.config(text="Storage_Size")
-       varchar_label.config(text="Connector")
-       output_label.grid_remove()
-       output_entry.grid_remove()
-   elif type == "Cable":
-       id_label.config(text="Cable_ID")
-       int_label.config(text="Length")
-       varchar_label.config(text="Color")
-       output_label.grid()
-       output_entry.grid()
-       output_label.config(text="Connector")
+    if type == "Charger":
+        id_label.config(text="Charger_ID")
+        int_label.config(text="Power")
+        varchar_label.config(text="Input")
+        output_label.grid()
+        output_entry.grid()
+        output_label.config(text="Output")
+    elif type == "Storage":
+        id_label.config(text="Storage_ID")
+        int_label.config(text="Storage_Size")
+        varchar_label.config(text="Connector")
+        output_label.grid_remove()
+        output_entry.grid_remove()
+    elif type == "Cable":
+        id_label.config(text="Cable_ID")
+        int_label.config(text="Length")
+        varchar_label.config(text="Color")
+        output_label.grid()
+        output_entry.grid()
+        output_label.config(text="Connector")
+    update_Treeview(type)
+
+def update_Treeview(table: str):
+    column_names = get_table_column_names(table)
+
+    data_result['columns'] = tuple(column_names)
+
+    data_result.heading("#0", text="")
+    for column in column_names:
+        data_result.heading(column, text=column)
+
 
 root = tk.Tk()
 root.title("Electronic management")
@@ -107,6 +119,25 @@ submit_buttton.grid(row=1, column=8)
 
 # sql result section
 data_result = ttk.Treeview(data_frame)
+data_result['columns'] = ("ID", "Brand", "Address")
+data_result['show'] = 'headings'
+
+# data_result.column("#0")
+# data_result.column("ID")
+# data_result.column("Brand")
+# data_result.column("Address")
+
+data_result.heading("#0", text="")
+data_result.heading("ID", text="ID")
+data_result.heading("Brand", text="Brand")
+data_result.heading("Address", text="Address")
+
+# count = 0
+# for record in query_db():
+#     data_result.insert(parent='', index='end', iid=str(count), values=record)
+#     count += 1
+
+
 data_result.pack(expand=True, fill='both')
 
 
