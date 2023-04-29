@@ -6,7 +6,6 @@ Database configuration inventory management system
 
 import os
 import sqlite3
-from typing import Tuple
 
 path = "inventory.db"
 
@@ -29,6 +28,16 @@ def create_db() -> None:
         cur.executescript(insert_script)
         con.commit()
         con.close()
+
+def get_table_column_names(table: str) -> list[str]:
+    con = sqlite3.connect(path)
+    cur = con.cursor()
+    res = cur.execute("SELECT name FROM PRAGMA_TABLE_INFO(?)", (table,))
+    test = res.fetchall()
+    con.close()
+
+    # return list of strings instead of list of single tuples
+    return [x[0] for x in test]
 
 def add_item(item: str, attributes: tuple, multivalue: list[tuple] = []) -> None:
     """
@@ -69,4 +78,5 @@ def add_cable(database: tuple[sqlite3.Connection, sqlite3.Cursor], attributes: t
     database[1].executemany("INSERT INTO Connector VALUES(?, ?,?)", connectors)
     database[0].commit()
 
-create_db()
+# create_db()
+# get_table_column_names("Storage")
