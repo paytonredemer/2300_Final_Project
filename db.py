@@ -42,6 +42,17 @@ def get_table_column_names(table: str) -> list[str]:
     # return list of strings instead of list of single tuples
     return [x[0] for x in test]
 
+
+def query_db(table):
+    con = sqlite3.connect(path)
+    cur = con.cursor()
+    # Fix to use ?
+    res = cur.execute(f"SELECT * FROM {table}")
+    query = res.fetchall()
+    con.close()
+
+    return query
+
 def add_item(item: str, attributes: tuple, multivalue: list[tuple] = []) -> None:
     """
     Add entries into database
@@ -82,3 +93,4 @@ def add_cable(database: tuple[sqlite3.Connection, sqlite3.Cursor], attributes: t
 
 # create_db()
 # get_table_column_names("Storage")
+query_db("Charger")

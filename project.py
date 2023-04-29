@@ -6,7 +6,7 @@ Inventory management system
 
 import tkinter as tk
 from tkinter import StringVar, ttk
-from db import get_table_column_names
+from db import get_table_column_names, query_db
 
 def update_type(*args):
     type = clicked.get()
@@ -15,20 +15,21 @@ def update_type(*args):
         id_label.config(text="Charger_ID")
         int_label.config(text="Power")
         varchar_label.config(text="Input")
-        output_label.grid()
+        varchar2_entry.grid_remove()
         output_entry.grid()
         output_label.config(text="Output")
     elif type == "Storage":
         id_label.config(text="Storage_ID")
         int_label.config(text="Storage_Size")
         varchar_label.config(text="Connector")
-        output_label.grid_remove()
         output_entry.grid_remove()
+        varchar2_entry.grid(row=1, column=5)
+        output_label.config(text="Medium")
     elif type == "Cable":
         id_label.config(text="Cable_ID")
         int_label.config(text="Length")
         varchar_label.config(text="Color")
-        output_label.grid()
+        varchar2_entry.grid_remove()
         output_entry.grid()
         output_label.config(text="Connector")
     update_Treeview(type)
@@ -40,6 +41,46 @@ def update_Treeview(table: str):
 
     for column in column_names:
         data_result.heading(column, text=column)
+
+    data_result.delete(*data_result.get_children())
+    count = 0
+    for record in query_db(table):
+        data_result.insert(parent='', index='end', iid=str(count), values=record)
+        count += 1
+
+def search_db():
+    type = clicked.get()
+    # query = f"SELECT * FROM {type}"
+    attributes = {}
+
+    if id_entry.get() != "":
+        attributes[type+"_ID"] = id_entry.get()
+    if brand_entry.get() != "":
+        attributes["Brand"] = brand_entry.get()
+    if address_entry.get() != "":
+        attributes["Address"] = address_entry.get()
+    if bin_entry.get() != "":
+        attributes["Bin_no"] = bin_entry.get()
+
+    if type == "Charger":
+        if int_entry.get() != "":
+            attributes["Power"] = int_entry.get()
+        if varchar_entry.get() != "":
+            attributes["Input"] = varchar_entry.get()
+        # add output_entry
+    elif type == "Storage":
+        if int_entry.get() != "":
+            attributes["Storage_Size"] = int_entry.get()
+        if varchar_entry.get() != "":
+            attributes["Connector"] = varchar_entry.get()
+        if varchar2_entry.get() != "":
+            attributes["Medium"] = varchar2_entry.get()
+    elif type == "Cable":
+        if int_entry.get() != "":
+            attributes["Length"] = int_entry.get()
+        if varchar_entry.get() != "":
+            attributes["Color"] = varchar_entry.get()
+        # add output_entry
 
 
 root = tk.Tk()
@@ -102,6 +143,8 @@ output_entry.grid(row=1, column=5)
 output_entry.insert(1, "test1")
 output_entry.insert(2, "test2")
 
+varchar2_entry = tk.Entry(input_frame)
+
 address_label = tk.Label(input_frame, text= "Address")
 address_entry = tk.Entry(input_frame)
 address_label.grid(row=0, column=6)
@@ -112,14 +155,14 @@ bin_entry = tk.Entry(input_frame)
 bin_label.grid(row=0, column=7)
 bin_entry.grid(row=1, column=7)
 
-submit_buttton = tk.Button(input_frame, text= "Search")
+submit_buttton = tk.Button(input_frame, text= "Search", command=search_db)
 submit_buttton.grid(row=1, column=8)
 
 
 # sql result section
 data_result = ttk.Treeview(data_frame)
 data_result['columns'] = ("ID", "Brand", "Address")
-data_result['show'] = 'headings'
+data_result['show'] = 'headings' # remove default empty column from Treeview
 
 update_Treeview("Charger")
 
@@ -159,4 +202,5 @@ for widget in modify_frame.winfo_children():
 for widget in add_frame.winfo_children():
     widget.grid_configure(padx=10,pady=5)
 
+varchar2_entry.grid_remove()
 root.mainloop()
