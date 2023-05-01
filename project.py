@@ -44,13 +44,15 @@ def update_Treeview(table: str):
 
     data_result.delete(*data_result.get_children())
     count = 0
-    for record in query_db(table):
+
+    query = f"SELECT * FROM {table}"
+
+    for record in query_db(query):
         data_result.insert(parent='', index='end', iid=str(count), values=record)
         count += 1
 
 def search_db():
     type = clicked.get()
-    # query = f"SELECT * FROM {type}"
     attributes = {}
 
     if id_entry.get() != "":
@@ -81,7 +83,23 @@ def search_db():
         if varchar_entry.get() != "":
             attributes["Color"] = varchar_entry.get()
         # add output_entry
+    # print(attributes)
 
+    if not attributes:
+        # Display ui message saying there is no info
+        return
+
+    query = f"SELECT * FROM {type} WHERE ("
+    for column, value in attributes.items():
+        query = query + f"{column} = '{value}' AND "
+    query = query[:-5] + ")"
+    result = query_db(query)
+
+    data_result.delete(*data_result.get_children())
+    count = 0
+    for record in result:
+        data_result.insert(parent='', index='end', iid=str(count), values=record)
+        count += 1
 
 root = tk.Tk()
 root.title("Electronic management")

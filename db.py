@@ -43,11 +43,10 @@ def get_table_column_names(table: str) -> list[str]:
     return [x[0] for x in test]
 
 
-def query_db(table):
+def query_db(query):
     con = sqlite3.connect(path)
     cur = con.cursor()
-    # Fix to use ?
-    res = cur.execute(f"SELECT * FROM {table}")
+    res = cur.execute(query)
     query = res.fetchall()
     con.close()
 
@@ -93,4 +92,4 @@ def add_cable(database: tuple[sqlite3.Connection, sqlite3.Cursor], attributes: t
 
 # create_db()
 # get_table_column_names("Storage")
-query_db("Charger")
+# query_db("Charger")
