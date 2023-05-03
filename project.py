@@ -120,6 +120,10 @@ def search_db():
         count += 1
 
 def checkout_item(*args):
+    """
+    Checks out item.
+    Checks if item is not checked out and exists in the database before
+    """
     type = clicked.get()
     id = id_edit_entry.get()
     user_id = username_entry.get()
@@ -131,6 +135,7 @@ def checkout_item(*args):
         messagebox.showerror("Can't checkout. Item is checked out", f"{name[0][0]} currently has this item checked out")
         return
 
+    # Check if item is in database
     checkout = query_db(f"SELECT {type}_ID FROM {type} WHERE {type}_ID = '{id}'")
     if len(checkout) > 0:
         query = f"INSERT INTO {type}_checkout VALUES({id}, '{user_id}', {int(time.time())})"
@@ -138,6 +143,25 @@ def checkout_item(*args):
         messagebox.showinfo("Item checked out", f"{type}# {id} checked out")
     else:
         messagebox.showerror("ID not in database", "Can not find item in database")
+
+def checkin_item(*args):
+    """
+    Checks in item
+    """
+    type = clicked.get()
+    id = id_edit_entry.get()
+    user_id = username_entry.get()
+
+    # Check if item is checked out
+    checkout = query_db(f"SELECT User_ID FROM {type}_checkout WHERE {type}_ID = '{id}' AND User_ID = '{user_id}'")
+    if len(checkout) > 0:
+        name = query_db(f"SELECT Name FROM USER WHERE ID = '{checkout[0][0]}'")
+        query = f"DELETE FROM {type}_checkout WHERE {type}_ID = '{id}' AND User_ID = '{user_id}'" 
+        modify_db(query)
+        messagebox.showinfo("Item checked in", f"{type}# {id} checked in")
+    else:
+        messagebox.showerror("ID not checked out", "Item is not checked out or doesn't exist")
+
 
 def remove_item(*args):
     """
@@ -154,6 +178,7 @@ def remove_item(*args):
         messagebox.showerror("Can't remove. Item is checked out", f"{name[0][0]} currently has this item checked out")
         return
 
+    # Check if item is in database
     checkout = query_db(f"SELECT {type}_ID FROM {type} WHERE {type}_ID = '{id}'")
     if len(checkout) > 0:
         query = f"DELETE FROM {type} WHERE {type}_ID = '{id}'"
@@ -272,11 +297,14 @@ id_edit_entry.grid(row=0,column=1)
 checkout_buttton = tk.Button(modify_frame, text= "Checkout", command=checkout_item)
 checkout_buttton.grid(row=0, column=2)
 
+checkin_buttton = tk.Button(modify_frame, text= "Checkin", command=checkin_item)
+checkin_buttton.grid(row=0, column=3)
+
 edit_buttton = tk.Button(modify_frame, text= "Edit")
-edit_buttton.grid(row=0, column=3)
+edit_buttton.grid(row=0, column=4)
 
 remove_buttton = tk.Button(modify_frame, text= "Remove", command=remove_item)
-remove_buttton.grid(row=0, column=4)
+remove_buttton.grid(row=0, column=5)
 
 
 # Add new item
