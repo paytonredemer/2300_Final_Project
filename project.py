@@ -9,7 +9,7 @@ import tkinter as tk
 from tkinter import StringVar, ttk
 from tkinter import messagebox
 from db import create_db, get_table_column_names, insert_db, modify_db, query_db
-from datetime import datetime
+import time
 
 def login(*args) -> None:
     """
@@ -122,17 +122,22 @@ def search_db():
 def checkout_item(*args):
     type = clicked.get()
     id = id_edit_entry.get()
+    user_id = username_entry.get()
 
-    query = f"SELECT {type}_ID FROM {type} WHERE {type}_ID = '{id}'"
-    if len(query_db(query)) == 0:
-        # add popup
-        print("Empty list")
+    # Check if item is checked out
+    checkout = query_db(f"SELECT User_ID FROM {type}_checkout WHERE {type}_ID = '{id}'")
+    if len(checkout) > 0:
+        name = query_db(f"SELECT Name FROM USER WHERE ID = '{checkout[0][0]}'")
+        messagebox.showerror("Can't checkout. Item is checked out", f"{name[0][0]} currently has this item checked out")
+        return
+
+    checkout = query_db(f"SELECT {type}_ID FROM {type} WHERE {type}_ID = '{id}'")
+    if len(checkout) > 0:
+        query = f"INSERT INTO {type}_checkout VALUES({id}, '{user_id}', {int(time.time())})"
+        modify_db(query)
+        messagebox.showinfo("Item checked out", f"{type}# {id} checked out")
     else:
-        # TODO check if user is already in database
-        insert = f"INSERT INTO {type}_checkout VALUES(?, ?, ?)"
-        # TODO: Add user id instead of 1
-        print(insert)
-        insert_db(insert, (int(id), 1, int(datetime.today().strftime('%Y%m%d')) ))
+        messagebox.showerror("ID not in database", "Can not find item in database")
 
 def remove_item(*args):
     """
