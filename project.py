@@ -4,9 +4,22 @@
 Inventory management system
 """
 
+from os.path import commonpath
 import tkinter as tk
 from tkinter import StringVar, ttk
-from db import get_table_column_names, query_db
+from tkinter import messagebox
+from db import get_table_column_names, insert_db, query_db
+from datetime import datetime
+
+def login(*args) -> None:
+    username = username_entry.get()
+    query = f"SELECT * FROM User WHERE ID = '{username}' AND Password = '{password_entry.get()}'"
+    if len(query_db(query)) > 0:
+        raise_frame(frame_main)
+    else:
+        # Throw popup if no user info found
+        messagebox.showerror("Invalid login information", f"Login for '{username}' not found or password incorrect")
+
 
 def update_type(*args):
     type = clicked.get()
@@ -101,23 +114,46 @@ def search_db():
         data_result.insert(parent='', index='end', iid=str(count), values=record)
         count += 1
 
+def checkout_item(*args):
+    type = clicked.get()
+    id = id_edit_entry.get()
+
+    query = f"SELECT {type}_ID FROM {type} WHERE {type}_ID = '{id}'"
+    if len(query_db(query)) == 0:
+        # add popup
+        print("Empty list")
+    else:
+        # TODO check if user is already in database
+        insert = f"INSERT INTO {type}_checkout VALUES(?, ?, ?)"
+        # TODO: Add user id instead of 1
+        print(insert)
+        insert_db(insert, (int(id), 1, int(datetime.today().strftime('%Y%m%d')) ))
+
+def raise_frame(frame):
+    frame.tkraise()
+
 root = tk.Tk()
 root.title("Electronic management")
 
-frame = tk.Frame(root)
-frame.pack()
+frame_main = tk.Frame(root)
+# frame_main.pack()
+
+frame_login = tk.Frame(root)
+
+for frame in (frame_main, frame_login):
+    frame.grid(row=0, column=0, sticky="news")
 
 # frames
-input_frame = tk.LabelFrame(frame, text="Search")
+input_frame = tk.LabelFrame(frame_main, text="Search")
 input_frame.grid(row=0, column=0, padx=10,pady=10)
 
-data_frame = tk.LabelFrame(frame, text="Result")
+data_frame = tk.LabelFrame(frame_main, text="Result")
 data_frame.grid(row=1,column=0, sticky="news", padx=10,pady=10)
 
-modify_frame = tk.LabelFrame(frame, text="Modify")
+modify_frame = tk.LabelFrame(frame_main, text="Modify")
 modify_frame.grid(row=2,column=0, sticky="news", padx=10,pady=10)
 
-add_frame = tk.LabelFrame(frame, text="Add")
+add_frame = tk.LabelFrame(frame_main, text="Add")
 add_frame.grid(row=3,column=0, sticky="news", padx=10,pady=10)
 
 # input section
@@ -193,7 +229,7 @@ id_edit_entry = tk.Entry(modify_frame)
 id_edit_label.grid(row=0,column=0)
 id_edit_entry.grid(row=0,column=1)
 
-checkout_buttton = tk.Button(modify_frame, text= "Checkout")
+checkout_buttton = tk.Button(modify_frame, text= "Checkout", command=checkout_item)
 checkout_buttton.grid(row=0, column=2)
 
 edit_buttton = tk.Button(modify_frame, text= "Edit")
@@ -209,6 +245,22 @@ new_item_button = tk.Button(add_frame, text= "Add")
 new_item_label.grid(row=1,column=0)
 new_item_button.grid(row=1, column=1)
 
+# Login screen
+login_labelframe = tk.LabelFrame(frame_login, text="Login")
+login_labelframe.place(in_=frame_login, anchor="center", relx=.5, rely=.5)
+
+username_label = tk.Label(login_labelframe, text= "Username:")
+username_entry = tk.Entry(login_labelframe)
+username_label.grid(row=0,column=0)
+username_entry.grid(row=0,column=1)
+
+password_label = tk.Label(login_labelframe, text= "Password:")
+password_entry = tk.Entry(login_labelframe)
+password_label.grid(row=1,column=0)
+password_entry.grid(row=1,column=1)
+
+login_button = tk.Button(login_labelframe, text='Login', command=login)
+login_button.grid(row=1, column=2)
 
 # visual stuff
 for widget in input_frame.winfo_children():
@@ -220,5 +272,9 @@ for widget in modify_frame.winfo_children():
 for widget in add_frame.winfo_children():
     widget.grid_configure(padx=10,pady=5)
 
+for widget in login_labelframe.winfo_children():
+    widget.grid_configure(padx=10,pady=5)
+
 varchar2_entry.grid_remove()
+raise_frame(frame_login)
 root.mainloop()

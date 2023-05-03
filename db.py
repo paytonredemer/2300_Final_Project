@@ -43,7 +43,7 @@ def get_table_column_names(table: str) -> list[str]:
     return [x[0] for x in test]
 
 
-def query_db(query):
+def query_db(query) -> list[tuple]:
     con = sqlite3.connect(path)
     cur = con.cursor()
     res = cur.execute(query)
@@ -51,6 +51,17 @@ def query_db(query):
     con.close()
 
     return query
+
+def insert_db(query, attributes):
+    con = sqlite3.connect(path)
+    cur = con.cursor()
+    res = cur.execute(query, attributes)
+    con.commit()
+
+    con.close()
+
+    return query
+
 
 def add_item(item: str, attributes: tuple, multivalue: list[tuple] = []) -> None:
     """
