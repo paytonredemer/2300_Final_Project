@@ -20,11 +20,19 @@ def login(*args) -> None:
     username = username_entry.get()
     query = f"SELECT * FROM User WHERE ID = '{username}' AND Password = '{password_entry.get()}'"
     if len(query_db(query)) > 0:
+        current_user.config(text=f"Current user:  {username}")
         raise_frame(frame_main)
     else:
         # Throw popup if no user info found
         messagebox.showerror("Invalid login information", f"Login for '{username}' not found or password incorrect")
 
+def logout(*args) -> None:
+    """
+    Logs user out and brings them back to the login screen
+    """
+    username_entry.delete(0, "end")
+    password_entry.delete(0, "end")
+    raise_frame(frame_login)
 
 def update_type(*args):
     type = clicked.get()
@@ -187,6 +195,9 @@ def remove_item(*args):
     else:
         messagebox.showerror("ID not in database", "Can not find item in database")
 
+def add_item(*args):
+    pass
+
 def raise_frame(frame):
     frame.tkraise()
 
@@ -197,24 +208,36 @@ frame_main = tk.Frame(root)
 
 frame_login = tk.Frame(root)
 
-for frame in (frame_main, frame_login):
+frame_add = tk.Frame(root)
+
+for frame in (frame_main, frame_login, frame_add):
     frame.grid(row=0, column=0, sticky="news")
 
 # frames
+user_frame = tk.LabelFrame(frame_main, text= "")
+user_frame.grid(row=0, column=0, sticky="nes", padx=10,pady=10)
+
 input_frame = tk.LabelFrame(frame_main, text="Search")
-input_frame.grid(row=0, column=0, padx=10,pady=10)
+input_frame.grid(row=1, column=0, padx=10,pady=10)
 
 data_frame = tk.LabelFrame(frame_main, text="Result")
-data_frame.grid(row=1,column=0, sticky="news", padx=10,pady=10)
+data_frame.grid(row=2,column=0, sticky="news", padx=10,pady=10)
 
 modify_frame = tk.LabelFrame(frame_main, text="Modify")
-modify_frame.grid(row=2,column=0, sticky="news", padx=10,pady=10)
+modify_frame.grid(row=3,column=0, sticky="news", padx=10,pady=10)
 
 add_frame = tk.LabelFrame(frame_main, text="Add")
-add_frame.grid(row=3,column=0, sticky="news", padx=10,pady=10)
+add_frame.grid(row=4,column=0, sticky="news", padx=10,pady=10)
 
 checked_out = tk.LabelFrame(frame_main, text="Items Checked out")
-checked_out.grid(row=4,column=0, sticky="news", padx=10,pady=10)
+checked_out.grid(row=5,column=0, sticky="news", padx=10,pady=10)
+
+# user info
+
+current_user = tk.Label(user_frame, text= "Current user:")
+logout_button = tk.Button(user_frame, text= "Logout", command=logout)
+current_user.grid(row=0, column=0,padx=10,pady=5)
+logout_button.grid(row=0, column=1,padx=10,pady=5)
 
 # input section
 type_label = tk.Label(input_frame, text= "Electronic Type")
@@ -309,7 +332,7 @@ remove_buttton.grid(row=0, column=5)
 
 # Add new item
 new_item_label = tk.Label(add_frame, text= "Have a new item?")
-new_item_button = tk.Button(add_frame, text= "Add")
+new_item_button = tk.Button(add_frame, text= "Add", command=lambda:raise_frame(frame_add))
 new_item_label.grid(row=1,column=0)
 new_item_button.grid(row=1, column=1)
 
@@ -331,6 +354,9 @@ password_entry.grid(row=1,column=1)
 
 login_button = tk.Button(login_labelframe, text='Login', command=login)
 login_button.grid(row=1, column=2)
+
+# Add screen
+add_labelframe = tk.LabelFrame(frame_add, text="Add")
 
 # visual stuff
 for widget in input_frame.winfo_children():
