@@ -62,6 +62,12 @@ def insert_db(query, attributes):
 
     return query
 
+def modify_db(query: str) -> None:
+    con = sqlite3.connect(path)
+    cur = con.cursor()
+    cur.execute(query)
+    con.commit()
+    con.close()
 
 def add_item(item: str, attributes: tuple, multivalue: list[tuple] = []) -> None:
     """

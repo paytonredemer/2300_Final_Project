@@ -8,7 +8,7 @@ from os.path import commonpath
 import tkinter as tk
 from tkinter import StringVar, ttk
 from tkinter import messagebox
-from db import get_table_column_names, insert_db, query_db
+from db import get_table_column_names, insert_db, modify_db, query_db
 from datetime import datetime
 
 def login(*args) -> None:
@@ -134,6 +134,29 @@ def checkout_item(*args):
         print(insert)
         insert_db(insert, (int(id), 1, int(datetime.today().strftime('%Y%m%d')) ))
 
+def remove_item(*args):
+    """
+    Removes item from respective table using its ID.
+    Checks to make item is in db and not checked out.
+    """
+    type = clicked.get()
+    id = id_edit_entry.get()
+
+    # Check if item is checked out
+    checkout = query_db(f"SELECT User_ID FROM {type}_checkout WHERE {type}_ID = '{id}'")
+    if len(checkout) > 0:
+        name = query_db(f"SELECT Name FROM USER WHERE ID = '{checkout[0][0]}'")
+        messagebox.showerror("Can't remove. Item is checked out", f"{name[0][0]} currently has this item checked out")
+        return
+
+    checkout = query_db(f"SELECT {type}_ID FROM {type} WHERE {type}_ID = '{id}'")
+    if len(checkout) > 0:
+        query = f"DELETE FROM {type} WHERE {type}_ID = '{id}'"
+        modify_db(query)
+        messagebox.showinfo("Item removed", f"{id} removed from {type} table")
+    else:
+        messagebox.showerror("ID not in database", "Can not find item in database")
+
 def raise_frame(frame):
     frame.tkraise()
 
@@ -225,6 +248,7 @@ data_result['show'] = 'headings' # remove default empty column from Treeview
 
 update_Treeview("Charger")
 
+
 data_result.pack(expand=True, fill='both')
 
 
@@ -240,7 +264,7 @@ checkout_buttton.grid(row=0, column=2)
 edit_buttton = tk.Button(modify_frame, text= "Edit")
 edit_buttton.grid(row=0, column=3)
 
-remove_buttton = tk.Button(modify_frame, text= "Remove")
+remove_buttton = tk.Button(modify_frame, text= "Remove", command=remove_item)
 remove_buttton.grid(row=0, column=4)
 
 
