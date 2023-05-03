@@ -22,8 +22,8 @@ CREATE TABLE Bin (
 
 CREATE TABLE Charger (
     Charger_ID VARCHAR(80),
-    Power INTEGER,
     Brand VARCHAR(80),
+    Power INTEGER,
     Input VARCHAR(80) NOT NULL,
     Address VARCHAR(80),
     Bin_no INTEGER,
@@ -33,8 +33,8 @@ CREATE TABLE Charger (
 
 CREATE TABLE Storage (
     Storage_ID VARCHAR(80),
-    Storage_Size INTEGER CHECK (Storage_Size > 0),
     Brand VARCHAR(80),
+    Storage_Size INTEGER CHECK (Storage_Size > 0),
     Connector VARCHAR(80) NOT NULL,
     Medium VARCHAR(80),
     Address VARCHAR(80),
