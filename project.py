@@ -4,7 +4,6 @@
 Inventory management system
 """
 
-from os.path import commonpath
 import tkinter as tk
 from tkinter import StringVar, ttk
 from tkinter import messagebox
@@ -33,6 +32,49 @@ def logout(*args) -> None:
     username_entry.delete(0, "end")
     password_entry.delete(0, "end")
     raise_frame(frame_login)
+
+def add_user(*args) -> None:
+    """
+    Adds new user to database
+    """
+    username = add_username_entry.get()
+    password = add_password_entry.get()
+    name = add_name_entry.get()
+    phone = add_phone_entry.get()
+
+    # Insert NULL in db instead of ""
+    if name == "":
+        name = "NULL"
+    else:
+        name = f"'{name}'"
+
+    if phone == "":
+        phone = "NULL"
+    else:
+        try:
+            phone = int(phone)
+        except:
+            messagebox.showerror("Invalid phone#", "Integer is required")
+            return
+
+
+    query = f"SELECT * FROM User WHERE ID = '{username}'"
+    if len(query_db(query)) > 0:
+        # Throw popup if there is already something with that username
+        messagebox.showerror("Invalid username", f"'{username}' already taken")
+    elif username == "":
+        messagebox.showerror("Invalid username", "Username cannot be empty")
+    elif password == "":
+        messagebox.showerror("Invalid password", "Password cannot be empty")
+    else:
+        query = f"INSERT INTO User VALUES('{username}', '{password}', {name}, {phone})"
+        modify_db(query)
+        messagebox.showinfo("User added", f"An account for {username} has been added")
+        add_username_entry.delete(0, "end")
+        add_password_entry.delete(0, "end")
+        add_name_entry.delete(0, "end")
+        add_phone_entry.delete(0, "end")
+        raise_frame(frame_login)
 
 def update_type(*args):
     type = clicked.get()
@@ -208,9 +250,9 @@ frame_main = tk.Frame(root)
 
 frame_login = tk.Frame(root)
 
-frame_add = tk.Frame(root)
+frame_add_user = tk.Frame(root)
 
-for frame in (frame_main, frame_login, frame_add):
+for frame in (frame_main, frame_login, frame_add_user):
     frame.grid(row=0, column=0, sticky="news")
 
 # frames
@@ -332,7 +374,7 @@ remove_buttton.grid(row=0, column=5)
 
 # Add new item
 new_item_label = tk.Label(add_frame, text= "Have a new item?")
-new_item_button = tk.Button(add_frame, text= "Add", command=lambda:raise_frame(frame_add))
+new_item_button = tk.Button(add_frame, text= "Add", command=lambda:raise_frame(frame_add_user))
 new_item_label.grid(row=1,column=0)
 new_item_button.grid(row=1, column=1)
 
@@ -355,8 +397,43 @@ password_entry.grid(row=1,column=1)
 login_button = tk.Button(login_labelframe, text='Login', command=login)
 login_button.grid(row=1, column=2)
 
-# Add screen
-add_labelframe = tk.LabelFrame(frame_add, text="Add")
+create_user_labelframe = tk.LabelFrame(frame_login, text="")
+create_user_labelframe.place(in_=frame_login, anchor="n", relx=.5, rely=.6)
+
+create_user_label = tk.Label(create_user_labelframe, text= "Need account?")
+create_user_button = tk.Button(create_user_labelframe, text='Create account', command=lambda:raise_frame(frame_add_user))
+create_user_label.grid(row=0,column=0)
+create_user_button.grid(row=0,column=1)
+
+# Add user screen
+add_user_labelframe = tk.LabelFrame(frame_add_user, text="Add user")
+add_user_labelframe.place(in_=frame_add_user, anchor="center", relx=.5, rely=.5)
+
+add_username_label = tk.Label(add_user_labelframe, text= "Username:")
+add_username_entry = tk.Entry(add_user_labelframe)
+add_username_label.grid(row=0,column=0)
+add_username_entry.grid(row=0,column=1)
+
+add_password_label = tk.Label(add_user_labelframe, text= "Password:")
+add_password_entry = tk.Entry(add_user_labelframe)
+add_password_label.grid(row=1,column=0)
+add_password_entry.grid(row=1,column=1)
+
+add_name_label = tk.Label(add_user_labelframe, text= "Name:")
+add_name_entry = tk.Entry(add_user_labelframe)
+add_name_label.grid(row=2,column=0)
+add_name_entry.grid(row=2,column=1)
+
+add_phone_label = tk.Label(add_user_labelframe, text= "Phone#:")
+add_phone_entry = tk.Entry(add_user_labelframe)
+add_phone_label.grid(row=3,column=0)
+add_phone_entry.grid(row=3,column=1)
+
+add_user_button = tk.Button(add_user_labelframe, text='Add user', command=add_user)
+add_user_button.grid(row=4, column=2)
+
+add_user_back_button = tk.Button(add_user_labelframe, text='Back to Login', command=logout)
+add_user_back_button.grid(row=4, column=0)
 
 # visual stuff
 for widget in input_frame.winfo_children():
@@ -369,6 +446,12 @@ for widget in add_frame.winfo_children():
     widget.grid_configure(padx=10,pady=5)
 
 for widget in login_labelframe.winfo_children():
+    widget.grid_configure(padx=10,pady=5)
+
+for widget in create_user_labelframe.winfo_children():
+    widget.grid_configure(padx=10,pady=5)
+
+for widget in add_user_labelframe.winfo_children():
     widget.grid_configure(padx=10,pady=5)
 
 varchar2_entry.grid_remove()
