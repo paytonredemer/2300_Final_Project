@@ -100,9 +100,10 @@ def update_type(*args):
         varchar2_entry.grid_remove()
         output_entry.grid()
         output_label.config(text="Connector")
-    update_Treeview(type)
+    update_Treeview()
 
-def update_Treeview(table: str):
+def update_Treeview(*args):
+    table = clicked.get()
     column_names = get_table_column_names(table)
 
     data_result['columns'] = tuple(column_names)
@@ -346,9 +347,7 @@ submit_buttton.grid(row=1, column=8)
 data_result = ttk.Treeview(data_frame)
 data_result['columns'] = ("ID", "Brand", "Address")
 data_result['show'] = 'headings' # remove default empty column from Treeview
-
-update_Treeview("Charger")
-
+update_Treeview()
 
 data_result.pack(expand=True, fill='both')
 
@@ -374,11 +373,19 @@ remove_buttton.grid(row=0, column=5)
 
 # Add new item
 new_item_label = tk.Label(add_frame, text= "Have a new item?")
-new_item_button = tk.Button(add_frame, text= "Add", command=lambda:raise_frame(frame_add_user))
+new_item_button = tk.Button(add_frame, text= "Add", command=lambda:raise_frame(frame_add_user)) # TODO: Update to move frame to seperate add interface rather than add user
 new_item_label.grid(row=1,column=0)
 new_item_button.grid(row=1, column=1)
 
 # Add checked_out section here
+items_checked_out = ttk.Treeview(checked_out)
+checked_out_columns = ("Item ID", "Type", "Checkout date")
+items_checked_out['columns'] = checked_out_columns
+for column in checked_out_columns:
+    items_checked_out.heading(column, text=column)
+items_checked_out['show'] = 'headings' # remove default empty column from Treeview
+items_checked_out.pack(expand=True, fill='both')
+# Add fuction that updates the treeview
 
 # Login screen
 login_labelframe = tk.LabelFrame(frame_login, text="Login")
@@ -434,6 +441,10 @@ add_user_button.grid(row=4, column=2)
 
 add_user_back_button = tk.Button(add_user_labelframe, text='Back to Login', command=logout)
 add_user_back_button.grid(row=4, column=0)
+
+# Add item screen here
+
+# Modify item screen here
 
 # visual stuff
 for widget in input_frame.winfo_children():
