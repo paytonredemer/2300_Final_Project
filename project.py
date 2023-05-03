@@ -8,7 +8,7 @@ from os.path import commonpath
 import tkinter as tk
 from tkinter import StringVar, ttk
 from tkinter import messagebox
-from db import get_table_column_names, insert_db, modify_db, query_db
+from db import create_db, get_table_column_names, insert_db, modify_db, query_db
 from datetime import datetime
 
 def login(*args) -> None:
@@ -164,7 +164,6 @@ root = tk.Tk()
 root.title("Electronic management")
 
 frame_main = tk.Frame(root)
-# frame_main.pack()
 
 frame_login = tk.Frame(root)
 
@@ -183,6 +182,9 @@ modify_frame.grid(row=2,column=0, sticky="news", padx=10,pady=10)
 
 add_frame = tk.LabelFrame(frame_main, text="Add")
 add_frame.grid(row=3,column=0, sticky="news", padx=10,pady=10)
+
+checked_out = tk.LabelFrame(frame_main, text="Items Checked out")
+checked_out.grid(row=4,column=0, sticky="news", padx=10,pady=10)
 
 # input section
 type_label = tk.Label(input_frame, text= "Electronic Type")
@@ -218,12 +220,16 @@ varchar_entry.grid(row=1, column=4)
 
 # TODO: Add multi select option
 output_label = tk.Label(input_frame, text= "Output")
-output_entry = tk.Listbox(input_frame)
+output_entry = tk.Menubutton(input_frame, text= "Select")
+Menu = tk.Menu(output_entry, tearoff=0)
+Menu.add_checkbutton(label= "Test1")
+Menu.add_checkbutton(label= "Test2")
+output_entry["menu"] = Menu
+
 output_label.grid(row=0, column=5)
 output_entry.grid(row=1, column=5)
 
-output_entry.insert(1, "test1")
-output_entry.insert(2, "test2")
+
 
 varchar2_entry = tk.Entry(input_frame)
 
@@ -273,6 +279,8 @@ new_item_label = tk.Label(add_frame, text= "Have a new item?")
 new_item_button = tk.Button(add_frame, text= "Add")
 new_item_label.grid(row=1,column=0)
 new_item_button.grid(row=1, column=1)
+
+# Add checked_out section here
 
 # Login screen
 login_labelframe = tk.LabelFrame(frame_login, text="Login")
