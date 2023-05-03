@@ -12,6 +12,11 @@ from db import get_table_column_names, insert_db, query_db
 from datetime import datetime
 
 def login(*args) -> None:
+    """
+    Checks to see if user information is in database.
+    If it's in the db, the view is switched.
+    Else an error popup is displayed.
+    """
     username = username_entry.get()
     query = f"SELECT * FROM User WHERE ID = '{username}' AND Password = '{password_entry.get()}'"
     if len(query_db(query)) > 0:
