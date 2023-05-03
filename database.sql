@@ -136,12 +136,18 @@ INSERT INTO Output(Charger_ID, Output_no, Type) VALUES(6, 4, 'USB-A');
 INSERT INTO Charger(Charger_ID, Power, Brand, Input, Address, Bin_no) VALUES(7, 10, 'Samsung', 'AC','Apt Dr, Rolla, MO 65409', 1);
 INSERT INTO Output(Charger_ID, Output_no, Type) VALUES(7, 1, 'USB-C');
 
+INSERT INTO Charger_checkout(Charger_ID, User_ID , Checkout_date ) VALUES(6,'payton', 1683155912);
+INSERT INTO Charger_checkout(Charger_ID, User_ID , Checkout_date ) VALUES(3,'payton', 1682983112);
+INSERT INTO Charger_checkout(Charger_ID, User_ID , Checkout_date ) VALUES(1, 'grader', 1682810312);
+
 
 INSERT INTO Storage(Storage_ID, Storage_Size, Brand, Connector, Medium, Address, Bin_no) VALUES(1, 1000, 'Toshiba', 'USB-A', 'HDD', 'Apt Dr, Rolla, MO 65409', 1);
 INSERT INTO Storage(Storage_ID, Storage_Size, Brand, Connector, Medium, Address, Bin_no) VALUES(2, 32, 'Sandisk', 'USB-A', 'Flashdrive', 'Apt Dr, Rolla, MO 65409', 1);
 INSERT INTO Storage(Storage_ID, Storage_Size, Brand, Connector, Medium, Address, Bin_no) VALUES(3, 32, 'Kingston', 'USB-A', 'Flashdrive', 'Apt Dr, Rolla, MO 65409', 1);
 INSERT INTO Storage(Storage_ID, Storage_Size, Brand, Connector, Medium, Address, Bin_no) VALUES(4, 2000, 'Samsung', 'USB-C', 'SSD', 'Apt Dr, Rolla, MO 65409', 1);
 
+INSERT INTO Storage_checkout(Storage_ID, User_ID , Checkout_date ) VALUES(2,'payton', 1683155912);
+INSERT INTO Storage_checkout(Storage_ID, User_ID , Checkout_date ) VALUES(4, 'grader', 1682810312);
 
 INSERT INTO Cable(Cable_ID, Brand, Length, Color, Address, Bin_no) VALUES(1, 'Anker', 3, 'Red', 'Apt Dr, Rolla, MO 65409', 1);
 INSERT INTO Connector(Cable_ID, Connector_no, End) VALUES(1, 1, 'USB-A');
@@ -152,3 +158,6 @@ INSERT INTO Connector(Cable_ID, Connector_no, End) VALUES(2, 2, 'USB-C');
 INSERT INTO Cable(Cable_ID, Brand, Length, Color, Address, Bin_no) VALUES(3, 'HP', 3, 'Black', 'Apt Dr, Rolla, MO 65409', 2);
 INSERT INTO Connector(Cable_ID, Connector_no, End) VALUES(3, 1, 'USB-A');
 INSERT INTO Connector(Cable_ID, Connector_no, End) VALUES(3, 2, 'USB-B');
+
+INSERT INTO Cable_checkout(Cable_ID, User_ID , Checkout_date ) VALUES(1, 'payton', 1683047912);
+INSERT INTO Cable_checkout(Cable_ID, User_ID , Checkout_date ) VALUES(2, 'grader', 1683047912);
