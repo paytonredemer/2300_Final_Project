@@ -7,6 +7,7 @@ Inventory management system
 import tkinter as tk
 from tkinter import StringVar, ttk
 from tkinter import messagebox
+from typing_extensions import IntVar
 from db import create_db, get_table_column_names, insert_db, modify_db, query_db
 import time
 from datetime import datetime
@@ -88,6 +89,7 @@ def update_type(*args):
         varchar2_entry.grid_remove()
         output_entry.grid()
         output_label.config(text="Output")
+        update_output_entry()
     elif type == "Storage":
         id_label.config(text="Storage_ID")
         int_label.config(text="Storage_Size")
@@ -102,7 +104,34 @@ def update_type(*args):
         varchar2_entry.grid_remove()
         output_entry.grid()
         output_label.config(text="Connector")
+        update_output_entry()
     update_Treeview()
+
+def update_output_entry(*args) -> None:
+    """
+    Update output options based on current type
+    """
+    type = clicked.get()
+    output = ""
+    connector = ""
+    global connectors
+    connectors = {}
+
+    if type == "Charger":
+        output = "Output"
+        connector = "Type"
+    elif type == "Cable":
+        output = "Connector"
+        connector = "End"
+
+    query = f"SELECT DISTINCT {connector} FROM {output}"
+    connector_values = query_db(query)
+    Menu = tk.Menu(output_entry, tearoff=0)
+    for connector in connector_values:
+        connectors[connector[0]] = tk.IntVar()
+        Menu.add_checkbutton(label = connector[0], variable=connectors[connector[0]])
+    output_entry["menu"] = Menu
+    # print(connectors)
 
 def update_Treeview(*args):
     table = clicked.get()
@@ -345,13 +374,10 @@ varchar_entry = tk.Entry(input_frame)
 varchar_label.grid(row=0, column=4)
 varchar_entry.grid(row=1, column=4)
 
-# TODO: Add multi select option
 output_label = tk.Label(input_frame, text= "Output")
 output_entry = tk.Menubutton(input_frame, text= "Select")
-Menu = tk.Menu(output_entry, tearoff=0)
-Menu.add_checkbutton(label= "Test1")
-Menu.add_checkbutton(label= "Test2")
-output_entry["menu"] = Menu
+update_output_entry()
+connectors = {}
 
 output_label.grid(row=0, column=5)
 output_entry.grid(row=1, column=5)
