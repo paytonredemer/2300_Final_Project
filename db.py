@@ -31,11 +31,11 @@ def get_table_column_names(table: str) -> list[str]:
     con = sqlite3.connect(path)
     cur = con.cursor()
     res = cur.execute("SELECT name FROM PRAGMA_TABLE_INFO(?)", (table,))
-    test = res.fetchall()
+    result = res.fetchall()
     con.close()
 
     # return list of strings instead of list of single tuples
-    return [x[0] for x in test]
+    return [x[0] for x in result]
 
 
 def query_db(query) -> list[tuple]:

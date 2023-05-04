@@ -80,7 +80,7 @@ def add_user(*args) -> None:
         raise_frame(frame_login)
 
 def update_type(*args):
-    type = clicked.get()
+    type = electronic_type.get()
 
     if type == "Charger":
         id_label.config(text="Charger_ID")
@@ -111,7 +111,7 @@ def update_output_entry(*args) -> None:
     """
     Update output options based on current type
     """
-    type = clicked.get()
+    type = electronic_type.get()
     output = ""
     connector = ""
     global connectors
@@ -133,13 +133,12 @@ def update_output_entry(*args) -> None:
         connectors[connector[0]] = tk.IntVar()
         Menu.add_checkbutton(label = connector[0], variable=connectors[connector[0]])
     output_entry["menu"] = Menu
-    # print(connectors)
 
 def update_data_result(*args):
     """
     Updates data_result based on type and current search box values
     """
-    type = clicked.get()
+    type = electronic_type.get()
     output = ""
     column_names = get_table_column_names(type)
 
@@ -179,7 +178,7 @@ def update_data_result(*args):
         count += 1
 
 def search_db():
-    type = clicked.get()
+    type = electronic_type.get()
     attributes = {}
 
     if id_entry.get() != "":
@@ -233,7 +232,7 @@ def checkout_item(*args):
     Checks out item.
     Checks if item is not checked out and exists in the database before
     """
-    type = clicked.get()
+    type = electronic_type.get()
     id = id_edit_entry.get()
     user_id = username_entry.get()
 
@@ -258,7 +257,7 @@ def checkin_item(*args):
     """
     Checks in item
     """
-    type = clicked.get()
+    type = electronic_type.get()
     id = id_edit_entry.get()
     user_id = username_entry.get()
 
@@ -279,7 +278,7 @@ def remove_item(*args):
     Removes item from respective table using its ID.
     Checks to make item is in db and not checked out.
     """
-    type = clicked.get()
+    type = electronic_type.get()
     id = id_edit_entry.get()
 
     # Check if item is checked out
@@ -374,11 +373,11 @@ type_label = tk.Label(input_frame, text= "Electronic Type")
 type_label.grid(row=0, column=0)
 
 options = ["Charger", "Storage", "Cable"]
-clicked = StringVar()
-clicked.set(options[0])
-clicked.trace('w', update_type)
+electronic_type = StringVar()
+electronic_type.set(options[0])
+electronic_type.trace('w', update_type)
 
-type_entry = tk.OptionMenu(input_frame, clicked, *options)
+type_entry = tk.OptionMenu(input_frame, electronic_type, *options)
 type_entry.grid(row=1, column=0)
 
 id_label = tk.Label(input_frame, text= "Charger_ID")
