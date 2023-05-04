@@ -80,7 +80,7 @@ def add_user(*args) -> None:
         raise_frame(frame_login)
 
 def update_type(*args):
-    type = electronic_type.get()
+    type = type_optionmenu.get()
 
     if type == "Charger":
         id_label.config(text="Charger_ID")
@@ -111,7 +111,7 @@ def update_output_entry(*args) -> None:
     """
     Update output options based on current type
     """
-    type = electronic_type.get()
+    type = type_optionmenu.get()
     output = ""
     connector = ""
     global connectors
@@ -138,7 +138,7 @@ def update_data_result(*args) -> None:
     """
     Updates data_result based on type
     """
-    type = electronic_type.get()
+    type = type_optionmenu.get()
     output = ""
     column_names = get_table_column_names(type)
 
@@ -180,7 +180,7 @@ def search_db(*args) -> None:
     """
     Updates data_result based on input_frame and type
     """
-    type = electronic_type.get()
+    type = type_optionmenu.get()
     attributes = {}
     # outputs = [] 
     output = ""
@@ -258,7 +258,7 @@ def checkout_item(*args):
     Checks out item.
     Checks if item is not checked out and exists in the database before
     """
-    type = electronic_type.get()
+    type = type_optionmenu.get()
     id = id_edit_entry.get()
     user_id = username_entry.get()
 
@@ -283,7 +283,7 @@ def checkin_item(*args):
     """
     Checks in item
     """
-    type = electronic_type.get()
+    type = type_optionmenu.get()
     id = id_edit_entry.get()
     user_id = username_entry.get()
 
@@ -304,7 +304,7 @@ def remove_item(*args):
     Removes item from respective table using its ID.
     Checks to make item is in db and not checked out.
     """
-    type = electronic_type.get()
+    type = type_optionmenu.get()
     id = id_edit_entry.get()
 
     # Check if item is checked out
@@ -324,8 +324,6 @@ def remove_item(*args):
     else:
         messagebox.showerror("ID not in database", "Can not find item in database")
 
-def add_item(*args):
-    pass
 
 def update_items_checked_out(*args) -> None:
     """
@@ -348,6 +346,43 @@ def update_items_checked_out(*args) -> None:
         items_checked_out.insert(parent='', index='end', iid=str(count), values=values)
         count += 1
 
+def add_item(*args) -> None:
+    pass
+
+def add_output(*args) -> None:
+    pass
+
+def switch_to_add_frame(*args) -> None:
+    if add_type_optionmenu.get() != "Storage":
+        add_varchar2_label.grid_remove()
+        add_varchar2_entry.grid_remove()
+    raise_frame(frame_add_item)
+
+def update_add_type(*args) -> None:
+    type = add_type_optionmenu.get()
+
+    if type == "Charger":
+        add_int_label.config(text="Power")
+        add_varchar_label.config(text="Input")
+        add_varchar2_label.grid_remove()
+        add_varchar2_entry.grid_remove()
+        add_output_labelframe.place(in_=frame_add_item, anchor="n", relx=.5, rely=.6)
+        add_output_label.config(text="Output")
+    elif type == "Storage":
+        add_int_label.config(text="Storage_Size")
+        add_varchar_label.config(text="Connector")
+        add_output_labelframe.place_forget()
+        add_varchar2_label.grid(row=0, column=5)
+        add_varchar2_entry.grid(row=1, column=5)
+    elif type == "Cable":
+        add_int_label.config(text="Length")
+        add_varchar_label.config(text="Color")
+        add_varchar2_entry.grid_remove()
+        add_output_labelframe.place(in_=frame_add_item, anchor="n", relx=.5, rely=.6)
+        add_output_label.config(text="Connector")
+    update_data_result()
+
+
 def raise_frame(frame):
     frame.tkraise()
 
@@ -365,7 +400,7 @@ frame_edit_item = tk.Frame(root)
 
 frame_add_user = tk.Frame(root)
 
-for frame in (frame_main, frame_login, frame_add_user):
+for frame in (frame_main, frame_login, frame_add_user, frame_add_item):
     frame.grid(row=0, column=0, sticky="news")
 
 # main frames
@@ -387,6 +422,8 @@ add_frame.grid(row=4,column=0, sticky="news", padx=10,pady=10)
 checked_out = tk.LabelFrame(frame_main, text="Items Checked out")
 checked_out.grid(row=5,column=0, sticky="news", padx=10,pady=10)
 
+
+
 # main screen
 
 # user info section
@@ -400,11 +437,11 @@ type_label = tk.Label(input_frame, text= "Electronic Type")
 type_label.grid(row=0, column=0)
 
 options = ["Charger", "Storage", "Cable"]
-electronic_type = StringVar()
-electronic_type.set(options[0])
-electronic_type.trace('w', update_type)
+type_optionmenu = StringVar()
+type_optionmenu.set(options[0])
+type_optionmenu.trace('w', update_type)
 
-type_entry = tk.OptionMenu(input_frame, electronic_type, *options)
+type_entry = tk.OptionMenu(input_frame, type_optionmenu, *options)
 type_entry.grid(row=1, column=0)
 
 id_label = tk.Label(input_frame, text= "Charger_ID")
@@ -458,7 +495,6 @@ update_data_result()
 
 data_result.pack(expand=True, fill='both')
 
-
 # Edit/change section
 id_edit_label = tk.Label(modify_frame, text= "ID:")
 id_edit_entry = tk.Entry(modify_frame)
@@ -477,10 +513,9 @@ edit_buttton.grid(row=0, column=4)
 remove_buttton = tk.Button(modify_frame, text= "Remove", command=remove_item)
 remove_buttton.grid(row=0, column=5)
 
-
 # Add new item section
 new_item_label = tk.Label(add_frame, text= "Have a new item?")
-new_item_button = tk.Button(add_frame, text= "Add", command=lambda:raise_frame(frame_add_user)) # TODO: Update to move frame to seperate add interface rather than add user
+new_item_button = tk.Button(add_frame, text= "Add", command=switch_to_add_frame) # TODO: Update to move frame to seperate add interface rather than add user
 new_item_label.grid(row=1,column=0)
 new_item_button.grid(row=1, column=1)
 
@@ -492,6 +527,8 @@ for column in checked_out_columns:
     items_checked_out.heading(column, text=column)
 items_checked_out['show'] = 'headings' # remove default empty column from Treeview
 items_checked_out.pack(expand=True, fill='both')
+
+
 
 # Login screen
 
@@ -518,6 +555,8 @@ create_user_label = tk.Label(create_user_labelframe, text= "Need account?")
 create_user_button = tk.Button(create_user_labelframe, text='Create account', command=lambda:raise_frame(frame_add_user))
 create_user_label.grid(row=0,column=0)
 create_user_button.grid(row=0,column=1)
+
+
 
 # Add user screen
 add_user_labelframe = tk.LabelFrame(frame_add_user, text="Add user")
@@ -549,7 +588,73 @@ add_user_button.grid(row=4, column=2)
 add_user_back_button = tk.Button(add_user_labelframe, text='Back to Login', command=logout)
 add_user_back_button.grid(row=4, column=0)
 
+
+
 # Add item screen here
+add_item_labelframe = tk.LabelFrame(frame_add_item, text="Add item")
+add_item_labelframe.place(in_=frame_add_item, anchor="center", relx=.5, rely=.5)
+
+add_type_label = tk.Label(add_item_labelframe, text= "Add electronic")
+add_type_label.grid(row=1, column=0)
+
+add_type_optionmenu = StringVar()
+add_type_optionmenu.set(options[0])
+add_type_optionmenu.trace('w', update_add_type)
+
+add_type_entry = tk.OptionMenu(add_item_labelframe, add_type_optionmenu, *options)
+add_type_entry.grid(row=1, column=1)
+
+add_brand_label = tk.Label(add_item_labelframe, text= "Brand")
+add_brand_entry = tk.Entry(add_item_labelframe)
+add_brand_label.grid(row=0, column=2)
+add_brand_entry.grid(row=1, column=2)
+
+add_int_label = tk.Label(add_item_labelframe, text= "Power")
+add_int_entry = tk.Entry(add_item_labelframe)
+add_int_label.grid(row=0, column=3)
+add_int_entry.grid(row=1, column=3)
+
+add_varchar_label = tk.Label(add_item_labelframe, text= "Input")
+add_varchar_entry = tk.Entry(add_item_labelframe)
+add_varchar_label.grid(row=0, column=4)
+add_varchar_entry.grid(row=1, column=4)
+
+add_varchar2_label = tk.Label(add_item_labelframe, text= "Medium")
+add_varchar2_entry = tk.Entry(add_item_labelframe) # used for Cable
+
+add_address_label = tk.Label(add_item_labelframe, text= "Address")
+add_address_entry = tk.Entry(add_item_labelframe)
+add_address_label.grid(row=0, column=6)
+add_address_entry.grid(row=1, column=6)
+
+add_bin_label = tk.Label(add_item_labelframe, text= "Bin Number")
+add_bin_entry = tk.Entry(add_item_labelframe)
+add_bin_label.grid(row=0, column=7)
+add_bin_entry.grid(row=1, column=7)
+
+add_submit_buttton = tk.Button(add_item_labelframe, text= "Add", command=add_item)
+add_submit_buttton.grid(row=1, column=8)
+
+
+add_output_labelframe = tk.LabelFrame(frame_add_item, text="Add output/connector")
+add_output_labelframe.place(in_=frame_add_item, anchor="n", relx=.5, rely=.6)
+
+add_output_label = tk.Label(add_output_labelframe, text="Add output")
+add_output_entry = tk.Entry(add_output_labelframe)
+add_output_label.grid(row=0, column=0)
+add_output_entry.grid(row=0, column=1)
+
+add_output_buttton = tk.Button(add_output_labelframe, text= "Add", command=add_output)
+add_output_buttton.grid(row=0, column=2)
+
+add_back_labelframe = tk.LabelFrame(frame_add_item, text="")
+add_back_labelframe.grid()
+
+add_back_label = tk.Label(add_back_labelframe, text="Go back")
+add_back_button = tk.Button(add_back_labelframe, text= "Back", command=logout)
+add_back_label.grid(row=0, column=0)
+add_back_button.grid(row=0, column=1)
+
 
 # Modify item screen here
 
@@ -570,6 +675,15 @@ for widget in create_user_labelframe.winfo_children():
     widget.grid_configure(padx=10,pady=5)
 
 for widget in add_user_labelframe.winfo_children():
+    widget.grid_configure(padx=10,pady=5)
+
+for widget in add_item_labelframe.winfo_children():
+    widget.grid_configure(padx=10,pady=5)
+
+for widget in add_output_labelframe.winfo_children():
+    widget.grid_configure(padx=10,pady=5)
+
+for widget in add_back_labelframe.winfo_children():
     widget.grid_configure(padx=10,pady=5)
 
 varchar2_entry.grid_remove()
