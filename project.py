@@ -7,7 +7,6 @@ Inventory management system
 import tkinter as tk
 from tkinter import StringVar, ttk
 from tkinter import messagebox
-from typing_extensions import IntVar
 from db import create_db, get_table_column_names, modify_db, query_db
 import time
 from datetime import datetime
@@ -354,56 +353,50 @@ def add_item(*args) -> None:
 
     if type == "Charger":
         if int_value != "":
-
-            if int(int_value) <= 0:
-                messagebox.showerror("Change Power value", "Power must be greater than 0")
+            if not int_value.isdigit():
+                messagebox.showerror("Change Power value", "Power needs to be an integer and non-zero positive number")
                 return
-            else:
-                attributes["Power"] = int(int_value)
+            attributes["Power"] = int(int_value)
 
         if varchar_value == "":
             messagebox.showerror("Input cannot be empty", "Please add value to Input")
             return
+        attributes["Input"] = varchar_value
 
-        else:
-            attributes["Input"] = varchar_value
     elif type == "Storage":
         if int_value != "":
-
-            if int(int_value) <= 0:
-                messagebox.showerror("Change Storage_Size value", "Storage_Size must be greater than 0")
+            if not int_value.isdigit():
+                messagebox.showerror("Change Storage_Size value", "Storage_Size needs to be an integer and non-zero positive number")
                 return
-            else:
-                attributes["Storage_Size"] = int(int_value)
+            attributes["Storage_Size"] = int(int_value)
 
         if varchar_value == "":
             messagebox.showerror("Connector cannot be empty", "Please add value to Connector")
             return
-        else:
-            attributes["Connector"] = varchar_value
+        attributes["Connector"] = varchar_value
+
         if varchar2_entry != "":
             attributes["Medium"] = varchar_value2
 
     elif type == "Cable":
         if int_value != "":
-
-            if int(int_value) <= 0:
-                messagebox.showerror("Change Length value", "Length must be greater than 0")
+            if not int_value.isdigit():
+                messagebox.showerror("Change Length value", "Length needs to be an integer and non-zero positive number")
                 return
-            else:
-                attributes["Length"] = int(int_value)
-
+            attributes["Length"] = int(int_value)
         if varchar_value == "":
             messagebox.showerror("Color cannot be empty", "Please add value to Color")
             return
-        else:
-            attributes["Color"] = varchar_value
+        attributes["Color"] = varchar_value
 
-    # Only add address and bin_no if in respective tables
-    if address != "" and bin != "":
-        if (address,int(bin)) in query_db(f"SELECT Address, Bin_no FROM Bin"):
-            attributes["Address"] = address
-            attributes["Bin_no"] = int(bin)
+    if address != "":
+        attributes["Address"] = address
+
+    if bin != "":
+        if not bin.isdigit():
+            messagebox.showerror("Change Bin_no value", "Bin_no needs to be an integer and non-zero positive number")
+            return
+        attributes["Bin_no"] = int(bin)
 
     # Get new unique item id
     query = query_db(f"SELECT {type}_ID FROM {type}")
@@ -414,7 +407,6 @@ def add_item(*args) -> None:
         # if there is more than a thousand items a new application is probably needed
         item_id = random.randint(1, 1000)
 
-    
     variables = f"{type}_ID, " + ", ".join(attributes.keys())
     values = f"{item_id}, "
     for value in list(attributes.values()):
@@ -449,6 +441,10 @@ def add_output(*args) -> None:
     output_value = add_output_entry.get()
 
     # Check if item is in database
+    if not item_id.isdigit():
+        messagebox.showerror("Change Type ID value", "Type ID needs to be an integer and non-zero positive number")
+        return
+
     checkout = query_db(f"SELECT {type}_ID FROM {output} WHERE {output}_no = {item_id}")
     if len(checkout) == 0:
         messagebox.showerror("ID not in database", "Can not find item in database")
