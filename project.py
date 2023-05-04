@@ -95,52 +95,18 @@ def update_type(*args):
         int_label.config(text="Power")
         varchar_label.config(text="Input")
         varchar2_entry.grid_remove()
-        output_entry.grid()
-        output_label.config(text="Output")
-        update_output_entry()
     elif type == "Storage":
         id_label.config(text="Storage_ID")
         int_label.config(text="Storage_Size")
         varchar_label.config(text="Connector")
-        output_entry.grid_remove()
         varchar2_entry.grid(row=1, column=5)
-        output_label.config(text="Medium")
     elif type == "Cable":
         id_label.config(text="Cable_ID")
         int_label.config(text="Length")
         varchar_label.config(text="Color")
         varchar2_entry.grid_remove()
-        output_entry.grid()
-        output_label.config(text="Connector")
-        update_output_entry()
     update_data_result()
 
-def update_output_entry(*args) -> None:
-    """
-    Update output options based on current type
-    """
-    type = type_optionmenu.get()
-    output = ""
-    connector = ""
-    global connectors
-    connectors = {}
-
-    if type == "Charger":
-        output = "Output"
-        connector = "Type"
-    elif type == "Cable":
-        output = "Connector"
-        connector = "End"
-    elif type == "Storage":
-        return
-
-    query = f"SELECT DISTINCT {connector} FROM {output}"
-    connector_values = query_db(query)
-    Menu = tk.Menu(output_entry, tearoff=0)
-    for connector in connector_values:
-        connectors[connector[0]] = tk.IntVar()
-        Menu.add_checkbutton(label = connector[0], variable=connectors[connector[0]])
-    output_entry["menu"] = Menu
 
 def update_data_result(*args) -> None:
     """
@@ -190,7 +156,6 @@ def search_db(*args) -> None:
     """
     type = type_optionmenu.get()
     attributes = {}
-    # outputs = [] 
     output = ""
 
     if type == "Charger":
@@ -224,15 +189,6 @@ def search_db(*args) -> None:
             attributes["Length"] = int_entry.get()
         if varchar_entry.get() != "":
             attributes["Color"] = varchar_entry.get()
-
-    # add multi values
-    # if type != "Storage":
-    #     if bool(connectors):
-    #         for output, selected in connectors.items():
-    #             print(output, selected)
-    #             if selected:
-    #                 outputs.append(output)
-    #         attributes[output_label.cget("text")] = outputs
 
     if not attributes:
         query = f"SELECT * FROM {type}"
@@ -474,14 +430,6 @@ varchar_label = tk.Label(input_frame, text= "Input")
 varchar_entry = tk.Entry(input_frame)
 varchar_label.grid(row=0, column=4)
 varchar_entry.grid(row=1, column=4)
-
-output_label = tk.Label(input_frame, text= "Output")
-output_entry = tk.Menubutton(input_frame, text= "Select")
-update_output_entry()
-connectors = {}
-
-output_label.grid(row=0, column=5)
-output_entry.grid(row=1, column=5)
 
 varchar2_entry = tk.Entry(input_frame) # used for Cable
 
