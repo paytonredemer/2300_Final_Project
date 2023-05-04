@@ -7,7 +7,7 @@ Inventory management system
 import tkinter as tk
 from tkinter import StringVar, ttk
 from tkinter import messagebox
-from db import create_db, get_table_column_names, modify_db, query_db
+from db import get_table_column_names, modify_db, query_db
 import time
 from datetime import datetime
 import random
