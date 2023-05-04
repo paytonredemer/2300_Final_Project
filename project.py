@@ -136,6 +136,9 @@ def update_output_entry(*args) -> None:
     # print(connectors)
 
 def update_data_result(*args):
+    """
+    Updates data_result based on type and current search box values
+    """
     type = clicked.get()
     output = ""
     column_names = get_table_column_names(type)
