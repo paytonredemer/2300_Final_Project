@@ -330,6 +330,9 @@ def change_id(*args) -> None:
 
     query = f"UPDATE {type} SET {type}_ID = {item_id} WHERE {type}_ID = {old_id}"
     modify_db(query)
+    update_data_result()
+    update_items_checked_out()
+    messagebox.showinfo("Item id update", f"{old_id} is now {item_id}")
 
 def add_item(*args) -> None:
     """
@@ -454,7 +457,7 @@ def add_output(*args) -> None:
     if output_value == "":
         messagebox.showerror("Output cannot be empty", "Please add value to Output")
         return
-    
+
     # Get new unique output id
     query = query_db(f"SELECT {output}_no FROM {output}")
     ids = []
@@ -463,7 +466,7 @@ def add_output(*args) -> None:
     while output_no in ids:
         # if there is more than a thousand outputs this is probably invalid
         output_no = random.randint(1, 1000)
-    
+
     query = f"INSERT INTO {output}({type}_ID, {output}_no, {end}) VALUES({item_id}, {output_no}, '{output_value}')"
     modify_db(query)
     messagebox.showinfo(f"{output} added", f"{output}# {output_no} is its ID")

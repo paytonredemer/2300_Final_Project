@@ -56,6 +56,7 @@ def modify_db(query: str) -> None:
     """
     con = sqlite3.connect(path)
     cur = con.cursor()
+    con.execute("PRAGMA foreign_keys = ON")
     cur.execute(query)
     con.commit()
     con.close()

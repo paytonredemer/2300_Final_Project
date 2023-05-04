@@ -61,21 +61,21 @@ CREATE TABLE Connector (
     Cable_ID INTEGER,
     Connector_no INTEGER NOT NULL,
     End VARCHAR(80),
-    FOREIGN KEY(Cable_ID) REFERENCES Cable(Cable_ID)
+    FOREIGN KEY(Cable_ID) REFERENCES Cable(Cable_ID) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE Output (
     Charger_ID INTEGER,
     Output_no INTEGER NOT NULL,
     Type VARCHAR(80),
-    FOREIGN KEY(Charger_ID) REFERENCES Charger(Charger_ID)
+    FOREIGN KEY(Charger_ID) REFERENCES Charger(Charger_ID) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE Cable_checkout (
     Cable_ID INTEGER,
     User_ID VARCHAR(80),
     Checkout_date INTEGER,
-    FOREIGN KEY(Cable_ID) REFERENCES Cable(Cable_ID),
+    FOREIGN KEY(Cable_ID) REFERENCES Cable(Cable_ID) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY(User_ID) REFERENCES User(ID)
 );
 
@@ -83,7 +83,7 @@ CREATE TABLE Storage_checkout (
     Storage_ID INTEGER,
     User_ID VARCHAR(80),
     Checkout_date INTEGER,
-    FOREIGN KEY(Storage_ID) REFERENCES Storage(Storage_ID),
+    FOREIGN KEY(Storage_ID) REFERENCES Storage(Storage_ID) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY(User_ID) REFERENCES User(ID)
 );
 
@@ -91,7 +91,7 @@ CREATE TABLE Charger_checkout (
     Charger_ID INTEGER,
     User_ID VARCHAR(80),
     Checkout_date INTEGER,
-    FOREIGN KEY(Charger_ID) REFERENCES Charger(Charger_ID),
+    FOREIGN KEY(Charger_ID) REFERENCES Charger(Charger_ID) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY(User_ID) REFERENCES User(ID)
 );
 
