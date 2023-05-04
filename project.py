@@ -9,6 +9,7 @@ from tkinter import StringVar, ttk
 from tkinter import messagebox
 from db import create_db, get_table_column_names, insert_db, modify_db, query_db
 import time
+from datetime import datetime
 
 def login(*args) -> None:
     """
@@ -20,6 +21,7 @@ def login(*args) -> None:
     query = f"SELECT * FROM User WHERE ID = '{username}' AND Password = '{password_entry.get()}'"
     if len(query_db(query)) > 0:
         current_user.config(text=f"Current user:  {username}")
+        update_items_checked_out()
         raise_frame(frame_main)
     else:
         # Throw popup if no user info found
@@ -191,6 +193,7 @@ def checkout_item(*args):
     if len(checkout) > 0:
         query = f"INSERT INTO {type}_checkout VALUES({id}, '{user_id}', {int(time.time())})"
         modify_db(query)
+        update_items_checked_out()
         messagebox.showinfo("Item checked out", f"{type}# {id} checked out")
     else:
         messagebox.showerror("ID not in database", "Can not find item in database")
@@ -209,6 +212,7 @@ def checkin_item(*args):
         name = query_db(f"SELECT Name FROM USER WHERE ID = '{checkout[0][0]}'")
         query = f"DELETE FROM {type}_checkout WHERE {type}_ID = '{id}' AND User_ID = '{user_id}'" 
         modify_db(query)
+        update_items_checked_out()
         messagebox.showinfo("Item checked in", f"{type}# {id} checked in")
     else:
         messagebox.showerror("ID not checked out", "Item is not checked out or doesn't exist")
@@ -241,22 +245,48 @@ def remove_item(*args):
 def add_item(*args):
     pass
 
+def update_items_checked_out(*args) -> None:
+    """
+    Updates list of user's checked out items to reflect what's in the database
+    """
+    user_id = username_entry.get()
+    query = f"""
+    SELECT "Charger" as Type, Charger_ID, Checkout_date FROM Charger_checkout WHERE User_ID = '{user_id}'
+    UNION
+    SELECT "Storage" as Type, Storage_ID, Checkout_date FROM Storage_checkout WHERE User_ID = '{user_id}'
+    UNION
+    SELECT "Cable" as Type, Cable_ID, Checkout_date FROM Cable_checkout WHERE User_ID = '{user_id}'
+    """
+    result = query_db(query)
+
+    items_checked_out.delete(*items_checked_out.get_children())
+    count = 0
+    for record in result:
+        values = (record[0], record[1], datetime.utcfromtimestamp(record[2]).strftime('%Y-%m-%d %I:%M %p'))
+        items_checked_out.insert(parent='', index='end', iid=str(count), values=values)
+        count += 1
+
 def raise_frame(frame):
     frame.tkraise()
 
 root = tk.Tk()
 root.title("Electronic management")
 
+# main screens
 frame_main = tk.Frame(root)
 
 frame_login = tk.Frame(root)
+
+frame_add_item = tk.Frame(root)
+
+frame_edit_item = tk.Frame(root)
 
 frame_add_user = tk.Frame(root)
 
 for frame in (frame_main, frame_login, frame_add_user):
     frame.grid(row=0, column=0, sticky="news")
 
-# frames
+# main frames
 user_frame = tk.LabelFrame(frame_main, text= "")
 user_frame.grid(row=0, column=0, sticky="nes", padx=10,pady=10)
 
@@ -275,8 +305,9 @@ add_frame.grid(row=4,column=0, sticky="news", padx=10,pady=10)
 checked_out = tk.LabelFrame(frame_main, text="Items Checked out")
 checked_out.grid(row=5,column=0, sticky="news", padx=10,pady=10)
 
-# user info
+# main screen
 
+# user info section
 current_user = tk.Label(user_frame, text= "Current user:")
 logout_button = tk.Button(user_frame, text= "Logout", command=logout)
 current_user.grid(row=0, column=0,padx=10,pady=5)
@@ -325,9 +356,7 @@ output_entry["menu"] = Menu
 output_label.grid(row=0, column=5)
 output_entry.grid(row=1, column=5)
 
-
-
-varchar2_entry = tk.Entry(input_frame)
+varchar2_entry = tk.Entry(input_frame) # used for Cable
 
 address_label = tk.Label(input_frame, text= "Address")
 address_entry = tk.Entry(input_frame)
@@ -342,7 +371,6 @@ bin_entry.grid(row=1, column=7)
 submit_buttton = tk.Button(input_frame, text= "Search", command=search_db)
 submit_buttton.grid(row=1, column=8)
 
-
 # sql result section
 data_result = ttk.Treeview(data_frame)
 data_result['columns'] = ("ID", "Brand", "Address")
@@ -352,7 +380,7 @@ update_Treeview()
 data_result.pack(expand=True, fill='both')
 
 
-# Edit/change
+# Edit/change section
 id_edit_label = tk.Label(modify_frame, text= "ID:")
 id_edit_entry = tk.Entry(modify_frame)
 id_edit_label.grid(row=0,column=0)
@@ -371,23 +399,23 @@ remove_buttton = tk.Button(modify_frame, text= "Remove", command=remove_item)
 remove_buttton.grid(row=0, column=5)
 
 
-# Add new item
+# Add new item section
 new_item_label = tk.Label(add_frame, text= "Have a new item?")
 new_item_button = tk.Button(add_frame, text= "Add", command=lambda:raise_frame(frame_add_user)) # TODO: Update to move frame to seperate add interface rather than add user
 new_item_label.grid(row=1,column=0)
 new_item_button.grid(row=1, column=1)
 
-# Add checked_out section here
+# Checked out items section
 items_checked_out = ttk.Treeview(checked_out)
-checked_out_columns = ("Item ID", "Type", "Checkout date")
+checked_out_columns = ("Type", "Item ID", "Checkout date")
 items_checked_out['columns'] = checked_out_columns
 for column in checked_out_columns:
     items_checked_out.heading(column, text=column)
 items_checked_out['show'] = 'headings' # remove default empty column from Treeview
 items_checked_out.pack(expand=True, fill='both')
-# Add fuction that updates the treeview
 
 # Login screen
+
 login_labelframe = tk.LabelFrame(frame_login, text="Login")
 login_labelframe.place(in_=frame_login, anchor="center", relx=.5, rely=.5)
 
