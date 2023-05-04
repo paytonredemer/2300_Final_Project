@@ -88,6 +88,9 @@ def add_user(*args) -> None:
         raise_frame(frame_login)
 
 def update_type(*args):
+    """
+    Updates UI based on type
+    """
     type = type_optionmenu.get()
 
     if type == "Charger":
@@ -317,15 +320,31 @@ def add_output(*args) -> None:
     pass
 
 def switch_to_add_frame(*args) -> None:
+    """
+    Switches user to the modify screen
+    """
     if add_type_optionmenu.get() != "Storage":
         add_varchar2_label.grid_remove()
         add_varchar2_entry.grid_remove()
     raise_frame(frame_add_item)
 
 def add_frame_back(*args) -> None:
-    pass
+    """
+    Switches user back to the main screen
+    """
+    add_brand_entry.delete(0, "end")
+    add_int_entry.delete(0, "end")
+    add_varchar_entry.delete(0, "end")
+    add_varchar2_entry.delete(0, "end")
+    add_address_entry.delete(0, "end")
+    add_bin_entry.delete(0, "end")
+    add_output_entry.delete(0, "end")
+    raise_frame(frame_main)
 
 def update_add_type(*args) -> None:
+    """
+    Updates modify UI based on type
+    """
     type = add_type_optionmenu.get()
 
     if type == "Charger":
@@ -349,8 +368,10 @@ def update_add_type(*args) -> None:
         add_output_label.config(text="Connector")
     update_data_result()
 
-
 def raise_frame(frame):
+    """
+    Allows for switching of frames
+    """
     frame.tkraise()
 
 root = tk.Tk()
@@ -610,7 +631,7 @@ add_back_labelframe = tk.LabelFrame(frame_add_item, text="")
 add_back_labelframe.grid()
 
 add_back_label = tk.Label(add_back_labelframe, text="Go back")
-add_back_button = tk.Button(add_back_labelframe, text= "Back", command=lambda:raise_frame(frame_main))
+add_back_button = tk.Button(add_back_labelframe, text= "Back", command=add_frame_back)
 add_back_label.grid(row=0, column=0)
 add_back_button.grid(row=0, column=1)
 
