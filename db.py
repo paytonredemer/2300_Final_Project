@@ -55,7 +55,7 @@ def query_db(query) -> list[tuple]:
     return query
 
 
-def modify_db(query: str) -> None:
+def modify_db(query) -> None:
     """
     Run queries that do modify the database
     """

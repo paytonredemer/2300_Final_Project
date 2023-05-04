@@ -5,7 +5,7 @@ Author: Payton Redemer
 File: main.py
 
 Inventory management system that uses SQLite.
-Final Project CS2300
+Final Project CS2300.
 """
 
 import tkinter as tk
@@ -721,9 +721,7 @@ remove_buttton.grid(row=0, column=5)
 
 # Add new item section
 new_item_label = tk.Label(add_frame, text="Have a new item?")
-new_item_button = tk.Button(
-    add_frame, text="Add", command=switch_to_add_frame
-)
+new_item_button = tk.Button(add_frame, text="Add", command=switch_to_add_frame)
 new_item_label.grid(row=1, column=0)
 new_item_button.grid(row=1, column=1)
 
