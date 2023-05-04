@@ -19,7 +19,6 @@ CREATE TABLE Bin (
     Room VARCHAR(80), 
     FOREIGN KEY(Address) REFERENCES Location(Address)
 );
-/* FOREIGN KEY(Bin_no) REFERENCES Bin(Bin_no) */
 
 CREATE TABLE Charger (
     Charger_ID VARCHAR(80),
@@ -29,7 +28,8 @@ CREATE TABLE Charger (
     Address VARCHAR(80),
     Bin_no INTEGER,
     PRIMARY KEY(Charger_ID),
-    FOREIGN KEY(Address) REFERENCES Location(Address)
+    FOREIGN KEY(Address) REFERENCES Location(Address),
+    FOREIGN KEY(Bin_no) REFERENCES Bin(Bin_no)
 );
 
 CREATE TABLE Storage (
@@ -41,9 +41,9 @@ CREATE TABLE Storage (
     Address VARCHAR(80),
     Bin_no INTEGER,
     PRIMARY KEY(Storage_ID),
-    FOREIGN KEY(Address) REFERENCES Location(Address)
+    FOREIGN KEY(Address) REFERENCES Location(Address),
+    FOREIGN KEY(Bin_no) REFERENCES Bin(Bin_no)
 );
-/* FOREIGN KEY(Bin_no) REFERENCES Bin(Bin_no) */
 
 CREATE TABLE Cable (
     Cable_ID VARCHAR(80),
@@ -53,24 +53,23 @@ CREATE TABLE Cable (
     Address VARCHAR(80),
     Bin_no INTEGER,
     PRIMARY KEY(Cable_ID),
-    FOREIGN KEY(Address) REFERENCES Location(Address)
+    FOREIGN KEY(Address) REFERENCES Location(Address),
+    FOREIGN KEY(Bin_no) REFERENCES Bin(Bin_no)
 );
 
 CREATE TABLE Connector (
     Cable_ID INTEGER,
-    Connector_no INTEGER NOT NULL, /* checkout constraints like unique */
+    Connector_no INTEGER NOT NULL,
     End VARCHAR(80),
     FOREIGN KEY(Cable_ID) REFERENCES Cable(Cable_ID)
 );
 
 CREATE TABLE Output (
     Charger_ID INTEGER,
-    Output_no INTEGER NOT NULL, /* checkout constraints like unique */
+    Output_no INTEGER NOT NULL,
     Type VARCHAR(80),
     FOREIGN KEY(Charger_ID) REFERENCES Charger(Charger_ID)
 );
-
-/* TODO: Check data type for checkout */
 
 CREATE TABLE Cable_checkout (
     Cable_ID INTEGER,
