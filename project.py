@@ -314,16 +314,24 @@ def update_items_checked_out(*args) -> None:
         items_checked_out.insert(parent='', index='end', iid=str(count), values=values)
         count += 1
 
-def update_location(*args) -> None:
+def change_id(*args) -> None:
     """
-    Update location of item
+    Update item id to new unique random id
     """
-    # Just make the user pick between locations already in the db
-    # make new interface
-    pass
+    type = add_type_optionmenu.get()
+    old_id = id_edit_entry.get()
+    query = query_db(f"SELECT {type}_ID FROM {type}")
+    ids = []
+    item_id = 1
+    [ids.append(int(id[0])) for id in query]
+    while item_id in ids:
+        # if there is more than a thousand items a new application is probably needed
+        item_id = random.randint(1, 1000)
+
+    query = f"UPDATE {type} SET {type}_ID = {item_id} WHERE {type}_ID = {old_id}"
+    modify_db(query)
 
 def add_item(*args) -> None:
-
     """
     Add item to database
     Generates new valid ID
@@ -420,13 +428,46 @@ def add_item(*args) -> None:
 
 
 def add_output(*args) -> None:
+    """
+    Add new output/connector to database
+    Generates new valid ID
+    """
     type = add_type_optionmenu.get()
     output = ""
+    end = ""
 
     if type == "Charger":
         output = "Output"
+        end = "Type"
     elif type == "Cable":
         output = "Connector"
+        end = "End"
+    item_id = add_output_id_entry.get()
+    output_value = add_output_entry.get()
+
+    # Check if item is in database
+    checkout = query_db(f"SELECT {type}_ID FROM {output} WHERE {output}_no = {item_id}")
+    if len(checkout) == 0:
+        messagebox.showerror("ID not in database", "Can not find item in database")
+        return
+    # Check if output is not empty
+    if output_value == "":
+        messagebox.showerror("Output cannot be empty", "Please add value to Output")
+        return
+    
+    # Get new unique output id
+    query = query_db(f"SELECT {output}_no FROM {output}")
+    ids = []
+    output_no = 1
+    [ids.append(int(id[0])) for id in query]
+    while output_no in ids:
+        # if there is more than a thousand outputs this is probably invalid
+        output_no = random.randint(1, 1000)
+    
+    query = f"INSERT INTO {output}({type}_ID, {output}_no, {end}) VALUES({item_id}, {output_no}, '{output_value}')"
+    modify_db(query)
+    messagebox.showinfo(f"{output} added", f"{output}# {output_no} is its ID")
+
 
 def switch_to_add_frame(*args) -> None:
     """
@@ -601,7 +642,7 @@ checkout_buttton.grid(row=0, column=2)
 checkin_buttton = tk.Button(modify_frame, text= "Checkin", command=checkin_item)
 checkin_buttton.grid(row=0, column=3)
 
-edit_buttton = tk.Button(modify_frame, text= "Update location", command=update_location)
+edit_buttton = tk.Button(modify_frame, text= "Change ID", command=change_id)
 edit_buttton.grid(row=0, column=4)
 
 remove_buttton = tk.Button(modify_frame, text= "Remove", command=remove_item)
@@ -733,13 +774,19 @@ add_submit_buttton.grid(row=1, column=8)
 add_output_labelframe = tk.LabelFrame(frame_add_item, text="Add output/connector")
 add_output_labelframe.place(in_=frame_add_item, anchor="n", relx=.5, rely=.6)
 
+
+add_output_id_label = tk.Label(add_output_labelframe, text="Type ID")
+add_output_id_entry = tk.Entry(add_output_labelframe)
+add_output_id_label.grid(row=0, column=0)
+add_output_id_entry.grid(row=1, column=0)
+
 add_output_label = tk.Label(add_output_labelframe, text="Add output")
 add_output_entry = tk.Entry(add_output_labelframe)
-add_output_label.grid(row=0, column=0)
-add_output_entry.grid(row=0, column=1)
+add_output_label.grid(row=0, column=1)
+add_output_entry.grid(row=1, column=1)
 
 add_output_buttton = tk.Button(add_output_labelframe, text= "Add", command=add_output)
-add_output_buttton.grid(row=0, column=2)
+add_output_buttton.grid(row=1, column=2)
 
 add_back_labelframe = tk.LabelFrame(frame_add_item, text="")
 add_back_labelframe.grid()
