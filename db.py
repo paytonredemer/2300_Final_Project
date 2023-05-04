@@ -12,19 +12,21 @@ import sqlite3
 
 path = "inventory.db"
 
+
 def create_db() -> None:
     """
     Checks to see if a sqlite database is present in directory. If not, creates
     database and populates it.
     """
     if not os.path.isfile(path):
-        with open('database.sql', 'r') as sql_file:
+        with open("database.sql", "r") as sql_file:
             sql_script = sql_file.read()
         con = sqlite3.connect(path)
         cur = con.cursor()
         cur.executescript(sql_script)
         con.commit()
         con.close()
+
 
 def get_table_column_names(table: str) -> list[str]:
     """
@@ -52,6 +54,7 @@ def query_db(query) -> list[tuple]:
 
     return query
 
+
 def modify_db(query: str) -> None:
     """
     Run queries that do modify the database
@@ -62,6 +65,7 @@ def modify_db(query: str) -> None:
     cur.execute(query)
     con.commit()
     con.close()
+
 
 # create database if not present in directory
 # called on import
