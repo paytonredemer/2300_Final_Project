@@ -11,6 +11,7 @@ from typing_extensions import IntVar
 from db import create_db, get_table_column_names, modify_db, query_db
 import time
 from datetime import datetime
+import random
 
 def login(*args) -> None:
     """
@@ -317,14 +318,115 @@ def update_location(*args) -> None:
     """
     Update location of item
     """
+    # Just make the user pick between locations already in the db
+    # make new interface
     pass
 
 def add_item(*args) -> None:
+
+    """
+    Add item to database
+    Generates new valid ID
+    """
     type = add_type_optionmenu.get()
+    brand = add_brand_entry.get()
+    int_value = add_int_entry.get()
+    varchar_value = add_varchar_entry.get()
+    varchar_value2 = add_varchar2_entry.get()
+    address = add_address_entry.get()
+    bin = add_bin_entry.get()
+
+    # Store input values as dictionary
+    attributes = {}
+    if brand != "":
+        attributes["Brand"] = brand
+
+    if type == "Charger":
+        if int_value != "":
+
+            if int(int_value) <= 0:
+                messagebox.showerror("Change Power value", "Power must be greater than 0")
+                return
+            else:
+                attributes["Power"] = int(int_value)
+
+        if varchar_value == "":
+            messagebox.showerror("Input cannot be empty", "Please add value to Input")
+            return
+
+        else:
+            attributes["Input"] = varchar_value
+    elif type == "Storage":
+        if int_value != "":
+
+            if int(int_value) <= 0:
+                messagebox.showerror("Change Storage_Size value", "Storage_Size must be greater than 0")
+                return
+            else:
+                attributes["Storage_Size"] = int(int_value)
+
+        if varchar_value == "":
+            messagebox.showerror("Connector cannot be empty", "Please add value to Connector")
+            return
+        else:
+            attributes["Connector"] = varchar_value
+        if varchar2_entry != "":
+            attributes["Medium"] = varchar_value2
+
+    elif type == "Cable":
+        if int_value != "":
+
+            if int(int_value) <= 0:
+                messagebox.showerror("Change Length value", "Length must be greater than 0")
+                return
+            else:
+                attributes["Length"] = int(int_value)
+
+        if varchar_value == "":
+            messagebox.showerror("Color cannot be empty", "Please add value to Color")
+            return
+        else:
+            attributes["Color"] = varchar_value
+
+    # Only add address and bin_no if in respective tables
+    if address != "" and bin != "":
+        if (address,int(bin)) in query_db(f"SELECT Address, Bin_no FROM Bin"):
+            attributes["Address"] = address
+            attributes["Bin_no"] = int(bin)
+
+    # Get new unique item id
+    query = query_db(f"SELECT {type}_ID FROM {type}")
+    ids = []
+    item_id = 1
+    [ids.append(int(id[0])) for id in query]
+    while item_id in ids:
+        # if there is more than a thousand items a new application is probably needed
+        item_id = random.randint(1, 1000)
+
+    
+    variables = f"{type}_ID, " + ", ".join(attributes.keys())
+    values = f"{item_id}, "
+    for value in list(attributes.values()):
+        if isinstance(value, int):
+            value = str(value)
+        else:
+            value = f"'{value}'"
+        values = values +  value + ", "
+    values = values[:-2]
+
+    query = f"INSERT INTO {type}({variables}) VALUES({values})"
+    modify_db(query)
+    messagebox.showinfo("Item added", f"{type}# {item_id} is its ID")
 
 
 def add_output(*args) -> None:
-    pass
+    type = add_type_optionmenu.get()
+    output = ""
+
+    if type == "Charger":
+        output = "Output"
+    elif type == "Cable":
+        output = "Connector"
 
 def switch_to_add_frame(*args) -> None:
     """
@@ -349,6 +451,7 @@ def add_frame_back(*args) -> None:
     add_address_entry.delete(0, "end")
     add_bin_entry.delete(0, "end")
     add_output_entry.delete(0, "end")
+    update_data_result()
     raise_frame(frame_main)
 
 def update_add_type(*args) -> None:
@@ -373,6 +476,7 @@ def update_add_type(*args) -> None:
     elif type == "Cable":
         add_int_label.config(text="Length")
         add_varchar_label.config(text="Color")
+        add_varchar2_label.grid_remove()
         add_varchar2_entry.grid_remove()
         add_output_labelframe.place(in_=frame_add_item, anchor="n", relx=.5, rely=.6)
         add_output_label.config(text="Connector")
