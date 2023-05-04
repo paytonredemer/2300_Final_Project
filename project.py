@@ -319,6 +319,7 @@ def remove_item(*args):
     if len(checkout) > 0:
         query = f"DELETE FROM {type} WHERE {type}_ID = '{id}'"
         modify_db(query)
+        update_data_result()
         messagebox.showinfo("Item removed", f"{id} removed from {type} table")
     else:
         messagebox.showerror("ID not in database", "Can not find item in database")
