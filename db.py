@@ -1,6 +1,9 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 """
+Author: Payton Redemer
+File: db.py
+
 Database configuration help functions for the inventory management system
 """
 
