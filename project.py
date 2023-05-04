@@ -8,7 +8,7 @@ import tkinter as tk
 from tkinter import StringVar, ttk
 from tkinter import messagebox
 from typing_extensions import IntVar
-from db import create_db, get_table_column_names, insert_db, modify_db, query_db
+from db import create_db, get_table_column_names, modify_db, query_db
 import time
 from datetime import datetime
 
@@ -313,19 +313,29 @@ def update_items_checked_out(*args) -> None:
         items_checked_out.insert(parent='', index='end', iid=str(count), values=values)
         count += 1
 
-def add_item(*args) -> None:
+def update_location(*args) -> None:
+    """
+    Update location of item
+    """
     pass
+
+def add_item(*args) -> None:
+    type = add_type_optionmenu.get()
+
 
 def add_output(*args) -> None:
     pass
 
 def switch_to_add_frame(*args) -> None:
     """
-    Switches user to the modify screen
+    Switches user to the modify screen to add
     """
     if add_type_optionmenu.get() != "Storage":
         add_varchar2_label.grid_remove()
         add_varchar2_entry.grid_remove()
+    else:
+        add_varchar2_label.grid(row=0, column=5)
+        add_varchar2_entry.grid(row=1, column=5)
     raise_frame(frame_add_item)
 
 def add_frame_back(*args) -> None:
@@ -487,7 +497,7 @@ checkout_buttton.grid(row=0, column=2)
 checkin_buttton = tk.Button(modify_frame, text= "Checkin", command=checkin_item)
 checkin_buttton.grid(row=0, column=3)
 
-edit_buttton = tk.Button(modify_frame, text= "Edit")
+edit_buttton = tk.Button(modify_frame, text= "Update location", command=update_location)
 edit_buttton.grid(row=0, column=4)
 
 remove_buttton = tk.Button(modify_frame, text= "Remove", command=remove_item)
