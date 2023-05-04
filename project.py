@@ -34,6 +34,14 @@ def logout(*args) -> None:
     """
     username_entry.delete(0, "end")
     password_entry.delete(0, "end")
+
+    id_entry.delete(0, "end")
+    brand_entry.delete(0, "end")
+    int_entry.delete(0, "end")
+    varchar_entry.delete(0, "end")
+    varchar2_entry.delete(0, "end")
+    address_entry.delete(0, "end")
+    bin_entry.delete(0, "end")
     raise_frame(frame_login)
 
 def add_user(*args) -> None:
@@ -358,6 +366,9 @@ def switch_to_add_frame(*args) -> None:
         add_varchar2_entry.grid_remove()
     raise_frame(frame_add_item)
 
+def add_frame_back(*args) -> None:
+    pass
+
 def update_add_type(*args) -> None:
     type = add_type_optionmenu.get()
 
@@ -651,7 +662,7 @@ add_back_labelframe = tk.LabelFrame(frame_add_item, text="")
 add_back_labelframe.grid()
 
 add_back_label = tk.Label(add_back_labelframe, text="Go back")
-add_back_button = tk.Button(add_back_labelframe, text= "Back", command=logout)
+add_back_button = tk.Button(add_back_labelframe, text= "Back", command=lambda:raise_frame(frame_main))
 add_back_label.grid(row=0, column=0)
 add_back_button.grid(row=0, column=1)
 
