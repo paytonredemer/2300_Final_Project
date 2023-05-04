@@ -35,6 +35,7 @@ def logout(*args) -> None:
     username_entry.delete(0, "end")
     password_entry.delete(0, "end")
 
+    # Clear all inputs
     id_entry.delete(0, "end")
     brand_entry.delete(0, "end")
     int_entry.delete(0, "end")
@@ -87,7 +88,7 @@ def add_user(*args) -> None:
         add_phone_entry.delete(0, "end")
         raise_frame(frame_login)
 
-def update_type(*args):
+def update_type(*args) -> None:
     """
     Updates UI based on type
     """
@@ -206,6 +207,7 @@ def search_db(*args) -> None:
     count = 0
     for record in query_db(query):
         values = list(record)
+        # Check if item is checked out
         if len(query_db(f"SELECT * FROM {type}_checkout WHERE {type}_ID = {record[0]}")) > 0:
             values.insert(1, "Yes")
         else:
@@ -220,7 +222,7 @@ def search_db(*args) -> None:
         data_result.insert(parent='', index='end', iid=str(count), values=values)
         count += 1
 
-def checkout_item(*args):
+def checkout_item(*args) -> None:
     """
     Checks out item.
     Checks if item is not checked out and exists in the database before
@@ -246,7 +248,7 @@ def checkout_item(*args):
     else:
         messagebox.showerror("ID not in database", "Can not find item in database")
 
-def checkin_item(*args):
+def checkin_item(*args) -> None:
     """
     Checks in item
     """
@@ -266,7 +268,7 @@ def checkin_item(*args):
         messagebox.showerror("ID not checked out", "Item is not checked out or doesn't exist")
 
 
-def remove_item(*args):
+def remove_item(*args) -> None:
     """
     Removes item from respective table using its ID.
     Checks to make item is in db and not checked out.
@@ -351,6 +353,7 @@ def add_item(*args) -> None:
     if brand != "":
         attributes["Brand"] = brand
 
+    # Note isdigit() will also return false for negative numbers
     if type == "Charger":
         if int_value != "":
             if not int_value.isdigit():
@@ -484,6 +487,7 @@ def add_frame_back(*args) -> None:
     """
     Switches user back to the main screen
     """
+    # clear add frame inputs
     add_brand_entry.delete(0, "end")
     add_int_entry.delete(0, "end")
     add_varchar_entry.delete(0, "end")
@@ -522,7 +526,7 @@ def update_add_type(*args) -> None:
         add_output_label.config(text="Connector")
     update_data_result()
 
-def raise_frame(frame):
+def raise_frame(frame) -> None:
     """
     Allows for switching of frames
     """
@@ -563,8 +567,6 @@ add_frame.grid(row=4,column=0, sticky="news", padx=10,pady=10)
 
 checked_out = tk.LabelFrame(frame_main, text="Items Checked out")
 checked_out.grid(row=5,column=0, sticky="news", padx=10,pady=10)
-
-
 
 # main screen
 
@@ -623,7 +625,6 @@ submit_buttton.grid(row=1, column=8)
 
 # sql result section
 data_result = ttk.Treeview(data_frame)
-data_result['columns'] = ("ID", "Brand", "Address")
 data_result['show'] = 'headings' # remove default empty column from Treeview
 update_data_result()
 
