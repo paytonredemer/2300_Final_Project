@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 """
-Database configuration inventory management system
+Database configuration help functions for the inventory management system
 """
 
 import os
@@ -39,6 +39,9 @@ def get_table_column_names(table: str) -> list[str]:
 
 
 def query_db(query) -> list[tuple]:
+    """
+    Run queries that don't modify the database
+    """
     con = sqlite3.connect(path)
     cur = con.cursor()
     res = cur.execute(query)
@@ -47,17 +50,10 @@ def query_db(query) -> list[tuple]:
 
     return query
 
-def insert_db(query, attributes):
-    con = sqlite3.connect(path)
-    cur = con.cursor()
-    res = cur.execute(query, attributes)
-    con.commit()
-
-    con.close()
-
-    return query
-
 def modify_db(query: str) -> None:
+    """
+    Run queries that do modify the database
+    """
     con = sqlite3.connect(path)
     cur = con.cursor()
     cur.execute(query)
@@ -103,5 +99,3 @@ def add_cable(database: tuple[sqlite3.Connection, sqlite3.Cursor], attributes: t
     database[0].commit()
 
 create_db()
-# get_table_column_names("Storage")
-# query_db("Charger")
