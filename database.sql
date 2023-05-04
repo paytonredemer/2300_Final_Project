@@ -27,9 +27,7 @@ CREATE TABLE Charger (
     Input VARCHAR(80) NOT NULL,
     Address VARCHAR(80),
     Bin_no INTEGER,
-    PRIMARY KEY(Charger_ID),
-    FOREIGN KEY(Address) REFERENCES Location(Address),
-    FOREIGN KEY(Bin_no) REFERENCES Bin(Bin_no)
+    PRIMARY KEY(Charger_ID)
 );
 
 CREATE TABLE Storage (
@@ -40,9 +38,7 @@ CREATE TABLE Storage (
     Medium VARCHAR(80),
     Address VARCHAR(80),
     Bin_no INTEGER,
-    PRIMARY KEY(Storage_ID),
-    FOREIGN KEY(Address) REFERENCES Location(Address),
-    FOREIGN KEY(Bin_no) REFERENCES Bin(Bin_no)
+    PRIMARY KEY(Storage_ID)
 );
 
 CREATE TABLE Cable (
@@ -52,9 +48,7 @@ CREATE TABLE Cable (
     Color VARCHAR(80) NOT NULL,
     Address VARCHAR(80),
     Bin_no INTEGER,
-    PRIMARY KEY(Cable_ID),
-    FOREIGN KEY(Address) REFERENCES Location(Address),
-    FOREIGN KEY(Bin_no) REFERENCES Bin(Bin_no)
+    PRIMARY KEY(Cable_ID)
 );
 
 CREATE TABLE Connector (
