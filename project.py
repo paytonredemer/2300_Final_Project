@@ -105,7 +105,7 @@ def update_type(*args):
         output_entry.grid()
         output_label.config(text="Connector")
         update_output_entry()
-    update_Treeview()
+    update_data_result()
 
 def update_output_entry(*args) -> None:
     """
@@ -123,6 +123,8 @@ def update_output_entry(*args) -> None:
     elif type == "Cable":
         output = "Connector"
         connector = "End"
+    elif type == "Storage":
+        return
 
     query = f"SELECT DISTINCT {connector} FROM {output}"
     connector_values = query_db(query)
@@ -133,9 +135,19 @@ def update_output_entry(*args) -> None:
     output_entry["menu"] = Menu
     # print(connectors)
 
-def update_Treeview(*args):
-    table = clicked.get()
-    column_names = get_table_column_names(table)
+def update_data_result(*args):
+    type = clicked.get()
+    output = ""
+    column_names = get_table_column_names(type)
+
+    if type == "Charger":
+        output = "Output"
+        column_names.insert(1, output)
+    elif type == "Cable":
+        output = "Connector"
+        column_names.insert(1, output)
+    column_names.insert(1, "Checked out")
+
 
     data_result['columns'] = tuple(column_names)
 
@@ -145,10 +157,22 @@ def update_Treeview(*args):
     data_result.delete(*data_result.get_children())
     count = 0
 
-    query = f"SELECT * FROM {table}"
+    query = f"SELECT * FROM {type}"
 
     for record in query_db(query):
-        data_result.insert(parent='', index='end', iid=str(count), values=record)
+        values = list(record)
+        if len(query_db(f"SELECT * FROM {type}_checkout WHERE {type}_ID = {record[0]}")) > 0:
+            values.insert(1, "Yes")
+        else:
+            values.insert(1, "No")
+
+        if type != "Storage":
+            query = f"SELECT * FROM {output} WHERE {type}_ID = {record[0]}"
+            outputs = []
+            [outputs.append(i[2]) for i in query_db(f"SELECT * FROM {output} WHERE {type}_ID = {record[0]}") ]
+            values.insert(2, ", ".join(outputs))
+
+        data_result.insert(parent='', index='end', iid=str(count), values=values)
         count += 1
 
 def search_db():
@@ -401,7 +425,7 @@ submit_buttton.grid(row=1, column=8)
 data_result = ttk.Treeview(data_frame)
 data_result['columns'] = ("ID", "Brand", "Address")
 data_result['show'] = 'headings' # remove default empty column from Treeview
-update_Treeview()
+update_data_result()
 
 data_result.pack(expand=True, fill='both')
 
