@@ -1,11 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 """
-Author: Payton Redemer
-File: main.py
-
-Inventory management system that uses SQLite.
-Final Project CS2300
+Inventory management system
 """
 
 import tkinter as tk
