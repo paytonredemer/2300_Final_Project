@@ -134,9 +134,9 @@ def update_output_entry(*args) -> None:
         Menu.add_checkbutton(label = connector[0], variable=connectors[connector[0]])
     output_entry["menu"] = Menu
 
-def update_data_result(*args):
+def update_data_result(*args) -> None:
     """
-    Updates data_result based on type and current search box values
+    Updates data_result based on type
     """
     type = electronic_type.get()
     output = ""
@@ -157,10 +157,9 @@ def update_data_result(*args):
         data_result.heading(column, text=column)
 
     data_result.delete(*data_result.get_children())
-    count = 0
 
     query = f"SELECT * FROM {type}"
-
+    count = 0
     for record in query_db(query):
         values = list(record)
         if len(query_db(f"SELECT * FROM {type}_checkout WHERE {type}_ID = {record[0]}")) > 0:
@@ -177,9 +176,19 @@ def update_data_result(*args):
         data_result.insert(parent='', index='end', iid=str(count), values=values)
         count += 1
 
-def search_db():
+def search_db(*args) -> None:
+    """
+    Updates data_result based on input_frame and type
+    """
     type = electronic_type.get()
     attributes = {}
+    # outputs = [] 
+    output = ""
+
+    if type == "Charger":
+        output = "Output"
+    elif type == "Cable":
+        output = "Connector"
 
     if id_entry.get() != "":
         attributes[type+"_ID"] = id_entry.get()
@@ -195,7 +204,6 @@ def search_db():
             attributes["Power"] = int_entry.get()
         if varchar_entry.get() != "":
             attributes["Input"] = varchar_entry.get()
-        # add output_entry
     elif type == "Storage":
         if int_entry.get() != "":
             attributes["Storage_Size"] = int_entry.get()
@@ -208,23 +216,41 @@ def search_db():
             attributes["Length"] = int_entry.get()
         if varchar_entry.get() != "":
             attributes["Color"] = varchar_entry.get()
-        # add output_entry
-    # print(attributes)
+
+    # add multi values
+    # if type != "Storage":
+    #     if bool(connectors):
+    #         for output, selected in connectors.items():
+    #             print(output, selected)
+    #             if selected:
+    #                 outputs.append(output)
+    #         attributes[output_label.cget("text")] = outputs
 
     if not attributes:
-        # Display ui message saying there is no info
-        return
-
-    query = f"SELECT * FROM {type} WHERE ("
-    for column, value in attributes.items():
-        query = query + f"{column} = '{value}' AND "
-    query = query[:-5] + ")"
-    result = query_db(query)
+        query = f"SELECT * FROM {type}"
+    else:
+        query = f"SELECT * FROM {type} WHERE ("
+        for column, value in attributes.items():
+            query = query + f"{column} = '{value}' AND "
+        query = query[:-5] + ")"
 
     data_result.delete(*data_result.get_children())
+
     count = 0
-    for record in result:
-        data_result.insert(parent='', index='end', iid=str(count), values=record)
+    for record in query_db(query):
+        values = list(record)
+        if len(query_db(f"SELECT * FROM {type}_checkout WHERE {type}_ID = {record[0]}")) > 0:
+            values.insert(1, "Yes")
+        else:
+            values.insert(1, "No")
+
+        if type != "Storage":
+            query = f"SELECT * FROM {output} WHERE {type}_ID = {record[0]}"
+            outputs = []
+            [outputs.append(i[2]) for i in query_db(f"SELECT * FROM {output} WHERE {type}_ID = {record[0]}") ]
+            values.insert(2, ", ".join(outputs))
+
+        data_result.insert(parent='', index='end', iid=str(count), values=values)
         count += 1
 
 def checkout_item(*args):
@@ -346,7 +372,7 @@ user_frame = tk.LabelFrame(frame_main, text= "")
 user_frame.grid(row=0, column=0, sticky="nes", padx=10,pady=10)
 
 input_frame = tk.LabelFrame(frame_main, text="Search")
-input_frame.grid(row=1, column=0, padx=10,pady=10)
+input_frame.grid(row=1, column=0,sticky="s", padx=10,pady=10)
 
 data_frame = tk.LabelFrame(frame_main, text="Result")
 data_frame.grid(row=2,column=0, sticky="news", padx=10,pady=10)
