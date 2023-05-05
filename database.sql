@@ -15,7 +15,7 @@ CREATE TABLE Location (
 
 CREATE TABLE Bin (
     Address VARCHAR(80),
-    Bin_no INTEGER NOT NULL,
+    Bin_no INTEGER NOT NULL CHECK (Bin_no > 0),
     Room VARCHAR(80), 
     FOREIGN KEY(Address) REFERENCES Location(Address)
 );
@@ -26,7 +26,7 @@ CREATE TABLE Charger (
     Power INTEGER,
     Input VARCHAR(80) NOT NULL,
     Address VARCHAR(80),
-    Bin_no INTEGER,
+    Bin_no INTEGER CHECK (Bin_no > 0),
     PRIMARY KEY(Charger_ID)
 );
 
@@ -37,7 +37,7 @@ CREATE TABLE Storage (
     Connector VARCHAR(80) NOT NULL,
     Medium VARCHAR(80),
     Address VARCHAR(80),
-    Bin_no INTEGER,
+    Bin_no INTEGER CHECK (Bin_no > 0),
     PRIMARY KEY(Storage_ID)
 );
 
@@ -47,7 +47,7 @@ CREATE TABLE Cable (
     Length INTEGER CHECK (Length > 0),
     Color VARCHAR(80) NOT NULL,
     Address VARCHAR(80),
-    Bin_no INTEGER,
+    Bin_no INTEGER CHECK (Bin_no > 0),
     PRIMARY KEY(Cable_ID)
 );
 
