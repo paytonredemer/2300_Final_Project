@@ -609,7 +609,17 @@ def oldest_checkout(*args) -> None:
 
 
 def total_items_checkedout(*args) -> None:
-    pass
+    """
+    Counts the number of each items using an aggregate function and displays
+    """
+    charger_total = query_db("SELECT COUNT(*) FROM Charger_checkout")[0][0]
+    storage_total = query_db("SELECT COUNT(*) FROM Storage_checkout")[0][0]
+    cable_total = query_db("SELECT COUNT(*) FROM Cable_checkout")[0][0]
+
+    messagebox.showinfo(
+        "Total number of items checked out",
+        f"There are {charger_total+ storage_total+cable_total} total items checked out\n {charger_total} Chargers\n {storage_total} Storage devices\n {cable_total} Cables",
+    )
 
 
 def raise_frame(frame) -> None:
