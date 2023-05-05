@@ -597,15 +597,22 @@ def update_add_type(*args) -> None:
 
 
 def oldest_checkout(*args) -> None:
-    query = f"""
-    SELECT Type, MIN(Checkout_date) FROM
-    (SELECT 'Charger; as Type, Charger_ID, Checkout_date  FROM Charger_checkout
-    UNION
-    SELECT 'Storage' as Type, Storage_ID, Checkout_date FROM Storage_checkout
-    UNION
-    SELECT 'Cable' as Type, Cable_ID, Checkout_date FROM Cable_checkout)
     """
-    pass
+    Displays the each oldest checked out item and when it was checked out
+    """
+    charger_min = query_db(
+        "SELECT Charger_ID, User_ID, MIN(Checkout_date)  FROM Charger_checkout HAVING Checkout_date = MIN(Checkout_date)"
+    )[0]
+    storage_min = query_db(
+        "SELECT Storage_ID, User_ID, MIN(Checkout_date)  FROM Storage_checkout HAVING MIN(Checkout_date)"
+    )[0]
+    cable_min = query_db(
+        "SELECT Cable_ID, User_ID, MIN(Checkout_date) FROM Cable_checkout HAVING MIN(Checkout_date)"
+    )[0]
+    messagebox.showinfo(
+        "The oldest things checked out",
+        f"Charger: #{charger_min[0]} by {charger_min[1]} at {datetime.utcfromtimestamp(int(charger_min[2])).strftime('%Y-%m-%d')}\n Storage: #{storage_min[0]} by {storage_min[1]} at {datetime.utcfromtimestamp(int(storage_min[2])).strftime('%Y-%m-%d')}\nCable: #{cable_min[0]} by {cable_min[1]} at {datetime.utcfromtimestamp(int(cable_min[2])).strftime('%Y-%m-%d')}",
+    )
 
 
 def total_items_checkedout(*args) -> None:

@@ -131,7 +131,7 @@ INSERT INTO Output(Charger_ID, Output_no, Type) VALUES(7, 1, 'USB-C');
 
 INSERT INTO Charger_checkout(Charger_ID, User_ID , Checkout_date ) VALUES(6,'payton', 1683155912);
 INSERT INTO Charger_checkout(Charger_ID, User_ID , Checkout_date ) VALUES(3,'payton', 1682983112);
-INSERT INTO Charger_checkout(Charger_ID, User_ID , Checkout_date ) VALUES(1, 'grader', 1682810312);
+INSERT INTO Charger_checkout(Charger_ID, User_ID , Checkout_date ) VALUES(1, 'grader', 1672310312);
 
 
 INSERT INTO Storage(Storage_ID, Storage_Size, Brand, Connector, Medium, Address, Bin_no) VALUES(1, 1000, 'Toshiba', 'USB-A', 'HDD', 'Apt Dr, Rolla, MO 65409', 1);
