@@ -108,16 +108,19 @@ def update_type(*args) -> None:
         id_label.config(text="Charger_ID")
         int_label.config(text="Power")
         varchar_label.config(text="Input")
+        varchar2_label.grid_remove()
         varchar2_entry.grid_remove()
     elif type == "Storage":
         id_label.config(text="Storage_ID")
         int_label.config(text="Storage_Size")
         varchar_label.config(text="Connector")
+        varchar2_label.grid(row=0, column=5)
         varchar2_entry.grid(row=1, column=5)
     elif type == "Cable":
         id_label.config(text="Cable_ID")
         int_label.config(text="Length")
         varchar_label.config(text="Color")
+        varchar2_label.grid_remove()
         varchar2_entry.grid_remove()
     update_data_result()
 
@@ -715,6 +718,7 @@ varchar_entry = tk.Entry(input_frame)
 varchar_label.grid(row=0, column=4)
 varchar_entry.grid(row=1, column=4)
 
+varchar2_label = tk.Label(input_frame, text="Medium")
 varchar2_entry = tk.Entry(input_frame)  # used for Cable
 
 address_label = tk.Label(input_frame, text="Address")
@@ -935,6 +939,7 @@ for frame in frames:
     for widget in frame.winfo_children():
         widget.grid_configure(padx=10, pady=5)
 
+varchar2_label.grid_remove()
 varchar2_entry.grid_remove()
 
 # start application
