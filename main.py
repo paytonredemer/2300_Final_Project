@@ -282,6 +282,7 @@ def checkout_item(*args) -> None:
             f"INSERT INTO {type}_checkout VALUES({id}, '{user_id}', {int(time.time())})"
         )
         modify_db(query)
+        update_data_result()
         update_items_checked_out()
         messagebox.showinfo("Item checked out", f"{type}# {id} checked out")
     else:
@@ -304,6 +305,7 @@ def checkin_item(*args) -> None:
         name = query_db(f"SELECT Name FROM USER WHERE ID = '{checkout[0][0]}'")
         query = f"DELETE FROM {type}_checkout WHERE {type}_ID = '{id}' AND User_ID = '{user_id}'"
         modify_db(query)
+        update_data_result()
         update_items_checked_out()
         messagebox.showinfo("Item checked in", f"{type}# {id} checked in")
     else:
@@ -374,6 +376,9 @@ def change_id(*args) -> None:
     """
     type = add_type_optionmenu.get()
     old_id = id_edit_entry.get()
+    if old_id == "":
+        return
+
     query = query_db(f"SELECT {type}_ID FROM {type}")
     ids = []
     item_id = 1
