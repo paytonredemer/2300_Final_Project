@@ -596,6 +596,22 @@ def update_add_type(*args) -> None:
     update_data_result()
 
 
+def oldest_checkout(*args) -> None:
+    query = f"""
+    SELECT Type, MIN(Checkout_date) FROM
+    (SELECT 'Charger; as Type, Charger_ID, Checkout_date  FROM Charger_checkout
+    UNION
+    SELECT 'Storage' as Type, Storage_ID, Checkout_date FROM Storage_checkout
+    UNION
+    SELECT 'Cable' as Type, Cable_ID, Checkout_date FROM Cable_checkout)
+    """
+    pass
+
+
+def total_items_checkedout(*args) -> None:
+    pass
+
+
 def raise_frame(frame) -> None:
     """
     Allows for switching of frames
@@ -638,6 +654,9 @@ add_frame.grid(row=4, column=0, sticky="news", padx=10, pady=10)
 
 checked_out = tk.LabelFrame(frame_main, text="Items Checked out")
 checked_out.grid(row=5, column=0, sticky="news", padx=10, pady=10)
+
+aggregate_frame = tk.LabelFrame(frame_main, text="Aggregate Functions")
+aggregate_frame.grid(row=6, column=0, sticky="nws", padx=10, pady=10)
 
 # main screen
 
@@ -734,6 +753,16 @@ for column in checked_out_columns:
 items_checked_out["show"] = "headings"  # remove default empty column from Treeview
 items_checked_out.pack(expand=True, fill="both")
 
+# basic aggregate functions
+oldest_checkout_button = tk.Button(
+    aggregate_frame, text="Oldest checkout", command=oldest_checkout
+)
+oldest_checkout_button.grid(row=0, column=0)
+
+total_items_checkedout_button = tk.Button(
+    aggregate_frame, text="Total Items checked out", command=total_items_checkedout
+)
+total_items_checkedout_button.grid(row=0, column=1)
 
 # Login screen
 
@@ -871,36 +900,26 @@ add_back_label.grid(row=0, column=0)
 add_back_button.grid(row=0, column=1)
 
 
-# Modify item screen here
-
 # visual stuff
-for widget in input_frame.winfo_children():
-    widget.grid_configure(padx=10, pady=5)
 
-for widget in modify_frame.winfo_children():
-    widget.grid_configure(padx=10, pady=5)
-
-for widget in add_frame.winfo_children():
-    widget.grid_configure(padx=10, pady=5)
-
-for widget in login_labelframe.winfo_children():
-    widget.grid_configure(padx=10, pady=5)
-
-for widget in create_user_labelframe.winfo_children():
-    widget.grid_configure(padx=10, pady=5)
-
-for widget in add_user_labelframe.winfo_children():
-    widget.grid_configure(padx=10, pady=5)
-
-for widget in add_item_labelframe.winfo_children():
-    widget.grid_configure(padx=10, pady=5)
-
-for widget in add_output_labelframe.winfo_children():
-    widget.grid_configure(padx=10, pady=5)
-
-for widget in add_back_labelframe.winfo_children():
-    widget.grid_configure(padx=10, pady=5)
+frames = (
+    input_frame,
+    modify_frame,
+    aggregate_frame,
+    add_frame,
+    login_labelframe,
+    create_user_labelframe,
+    add_user_labelframe,
+    add_item_labelframe,
+    add_output_labelframe,
+    add_back_labelframe,
+)
+for frame in frames:
+    for widget in frame.winfo_children():
+        widget.grid_configure(padx=10, pady=5)
 
 varchar2_entry.grid_remove()
+
+# start application
 raise_frame(frame_login)
 root.mainloop()
