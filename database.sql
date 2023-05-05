@@ -21,7 +21,7 @@ CREATE TABLE Bin (
 );
 
 CREATE TABLE Charger (
-    Charger_ID INTEGER
+    Charger_ID INTEGER,
     Brand VARCHAR(80),
     Power INTEGER CHECK (Power > 0),
     Input VARCHAR(80) NOT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE Charger (
 );
 
 CREATE TABLE Storage (
-    Storage_ID INTEGER
+    Storage_ID INTEGER,
     Brand VARCHAR(80),
     Storage_Size INTEGER CHECK (Storage_Size > 0),
     Connector VARCHAR(80) NOT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE Storage (
 );
 
 CREATE TABLE Cable (
-    Cable_ID INTEGER
+    Cable_ID INTEGER,
     Brand VARCHAR(80),
     Length INTEGER CHECK (Length > 0),
     Color VARCHAR(80) NOT NULL,
