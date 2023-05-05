@@ -308,7 +308,8 @@ def checkin_item(*args) -> None:
         messagebox.showinfo("Item checked in", f"{type}# {id} checked in")
     else:
         messagebox.showerror(
-            "ID not checked out or someone has it checked out", "Item is not checked out by you or doesn't exist"
+            "ID not checked out or someone has it checked out",
+            "Item is not checked out by you or doesn't exist",
         )
 
 
